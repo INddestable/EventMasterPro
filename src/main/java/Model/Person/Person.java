@@ -13,6 +13,10 @@ public abstract class Person {
     protected String name;
     protected String contact;
 
+    // Empty Constructor (REQUIRED)
+    public Person(){
+    }
+    
     // Constructor
     public Person(int id, String name, String contact) {
         this.id = id;
