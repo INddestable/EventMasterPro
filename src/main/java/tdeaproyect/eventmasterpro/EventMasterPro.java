@@ -12,5 +12,6 @@ public class EventMasterPro {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
+        System.out.println("Si lees esto es porque el segundo commit ha funcionado!");
     }
 }
