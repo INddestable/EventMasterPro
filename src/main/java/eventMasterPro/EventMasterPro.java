@@ -155,9 +155,77 @@ public class EventMasterPro {
 
     //LOCATIONS
     private void manageLocations() {
-        System.out.println("[Manage Locations] - (To be implemented)");
+        int option;
+        do {
+            System.out.println("\n=== Manage Locations ===");
+            System.out.println("1. Create Location");
+            System.out.println("2. List Locations");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Select an option: ");
+            option = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            switch (option) {
+                case 1:
+                    createLocation();
+                    break;
+                case 2:
+                    listLocations();
+                    break;
+                case 0:
+                    System.out.println("Returning to Main Menu...");
+                    break;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        } while (option != 0);
     }
 
+        private void createLocation() {
+            System.out.println("\n=== Create New Location ===");
+
+            System.out.print("Enter Location Name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Enter Address: ");
+            String address = scanner.nextLine();
+
+            System.out.print("Enter Capacity: ");
+            int capacity = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            System.out.print("Enter Technical Features: ");
+            String technicalFeatures = scanner.nextLine();
+
+            int newId = locations.size() + 1; // Simple ID generator
+            model.location.Location location = new model.location.Location();
+            location.setId(newId);
+            location.setName(name);
+            location.setAddress(address);
+            location.setCapacity(capacity);
+            location.setTechnicalFeatures(technicalFeatures);
+
+            locations.add(location);
+
+            System.out.println("Location created successfully with ID: " + newId);
+        }
+
+        private void listLocations() {
+            System.out.println("\n=== List of Locations ===");
+            if (locations.isEmpty()) {
+                System.out.println("No locations registered yet.");
+            } else {
+                for (model.location.Location location : locations) {
+                    System.out.println("ID: " + location.getId() +
+                                       " | Name: " + location.getName() +
+                                       " | Address: " + location.getAddress() +
+                                       " | Capacity: " + location.getCapacity() +
+                                       " | Features: " + location.getTechnicalFeatures());
+                }
+            }
+        }
+
+    
     //ARTISTS
     private void manageArtists() {
         System.out.println("[Manage Artists] - (To be implemented)");
