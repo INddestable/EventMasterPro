@@ -228,9 +228,71 @@ public class EventMasterPro {
     
     //ARTISTS
     private void manageArtists() {
-        System.out.println("[Manage Artists] - (To be implemented)");
-    }
+        int option;
+        do {
+            System.out.println("\n=== Manage Artists ===");
+            System.out.println("1. Register Artist");
+            System.out.println("2. List Artists");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Select an option: ");
+            option = scanner.nextInt();
+            scanner.nextLine(); // consume newline
 
+            switch (option) {
+                case 1:
+                    registerArtist();
+                    break;
+                case 2:
+                    listArtists();
+                    break;
+                case 0:
+                    System.out.println("Returning to Main Menu...");
+                    break;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        } while (option != 0);
+    }
+    
+        private void registerArtist() {
+            System.out.println("\n=== Register New Artist ===");
+
+            System.out.print("Enter Artist Name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Enter Contact Info: ");
+            String contact = scanner.nextLine();
+
+            System.out.print("Enter Technical Requirements: ");
+            String technicalRequirements = scanner.nextLine();
+
+            int newId = artists.size() + 1; // Simple ID generator
+            model.person.Artist artist = new model.person.Artist();
+            artist.setId(newId);
+            artist.setName(name);
+            artist.setContact(contact);
+            artist.setTechnicalRequirements(technicalRequirements);
+
+            artists.add(artist);
+
+            System.out.println("Artist registered successfully with ID: " + newId);
+        }
+
+        private void listArtists() {
+            System.out.println("\n=== List of Artists ===");
+            if (artists.isEmpty()) {
+                System.out.println("No artists registered yet.");
+            } else {
+                for (model.person.Artist artist : artists) {
+                    System.out.println("ID: " + artist.getId() +
+                                       " | Name: " + artist.getName() +
+                                       " | Contact: " + artist.getContact() +
+                                       " | Requirements: " + artist.getTechnicalRequirements());
+                }
+            }
+        }
+
+        
     //TICKETS && SALES
     private void manageTicketsAndSales() {
         System.out.println("[Manage Tickets and Sales] - (To be implemented)");
