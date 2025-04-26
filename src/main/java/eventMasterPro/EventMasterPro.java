@@ -40,6 +40,39 @@ public class EventMasterPro {
         sales = new ArrayList<>();
         scanner = new Scanner(System.in);
     }
+    
+    //Safe Int & Double ENTRY
+    //SAFE INT
+    private int readInt(String message) {
+        int value;
+        while (true) {
+            try {
+                System.out.print(message);
+                value = scanner.nextInt();
+                scanner.nextLine();
+                return value;
+            } catch (Exception e) {
+                System.out.println("[ERROR] Invalid input. Please enter a valid integer number.");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    //SAFE DOUBLE
+    private double readDouble(String message) {
+        double value;
+        while (true) {
+            try {
+                System.out.print(message);
+                value = scanner.nextDouble();
+                scanner.nextLine();
+                return value;
+            } catch (Exception e) {
+                System.out.println("[ERROR] Invalid input. Please enter a valid decimal number.");
+                scanner.nextLine();
+            }
+        }
+    }
 
     public void start() {
         int option;
@@ -51,9 +84,7 @@ public class EventMasterPro {
             System.out.println("4. Manage Tickets and Sales");
             System.out.println("5. View Statistics");
             System.out.println("0. Exit");
-            System.out.print("Select an option: ");
-            option = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            option = readInt("Select an option: ");
 
             switch (option) {
                 case 1:
@@ -88,9 +119,7 @@ public class EventMasterPro {
             System.out.println("1. Create Event");
             System.out.println("2. List Events");
             System.out.println("0. Back to Main Menu");
-            System.out.print("Select an option: ");
-            option = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            option = readInt("Select an option: ");
 
             switch (option) {
                 case 1:
@@ -161,9 +190,7 @@ public class EventMasterPro {
             System.out.println("1. Create Location");
             System.out.println("2. List Locations");
             System.out.println("0. Back to Main Menu");
-            System.out.print("Select an option: ");
-            option = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            option = readInt("Select an option: ");
 
             switch (option) {
                 case 1:
@@ -190,9 +217,8 @@ public class EventMasterPro {
             System.out.print("Enter Address: ");
             String address = scanner.nextLine();
 
-            System.out.print("Enter Capacity: ");
-            int capacity = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            int capacity = readInt("Enter Capacity");
+            scanner.nextLine();
 
             System.out.print("Enter Technical Features: ");
             String technicalFeatures = scanner.nextLine();
@@ -234,9 +260,7 @@ public class EventMasterPro {
             System.out.println("1. Register Artist");
             System.out.println("2. List Artists");
             System.out.println("0. Back to Main Menu");
-            System.out.print("Select an option: ");
-            option = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            option = readInt("Select an option: ");
 
             switch (option) {
                 case 1:
@@ -295,8 +319,144 @@ public class EventMasterPro {
         
     //TICKETS && SALES
     private void manageTicketsAndSales() {
-        System.out.println("[Manage Tickets and Sales] - (To be implemented)");
+        int option;
+        do {
+            System.out.println("\n=== Manage Tickets and Sales ===");
+            System.out.println("1. Create Tickets for Event");
+            System.out.println("2. List Tickets");
+            System.out.println("0. Back to Main Menu");
+            option = readInt("Select an option: ");
+
+            switch (option) {
+                case 1:
+                    createTicketsForEvent();
+                    break;
+                case 2:
+                    listTickets();
+                    break;
+                case 0:
+                    System.out.println("Returning to Main Menu...");
+                    break;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        } while (option != 0);
     }
+
+        private void createTicketsForEvent() {
+            System.out.println("\n=== Create Tickets for Event ===");
+
+            if (events.isEmpty()) {
+                System.out.println("No events available. Please create an event first.");
+                return;
+            }
+
+            listEvents();
+
+            int eventId = readInt("Enter Event ID to create tickets for: ");
+            //scanner.nextLine();
+
+            Event selectedEvent = null;
+            for (Event event : events) {
+                if (event.getId() == eventId) {
+                    selectedEvent = event;
+                    break;
+                }
+            }
+
+            if (selectedEvent == null) {
+                System.out.println("Event not found.");
+                return;
+            }
+
+            // Comprobar si el evento ya tiene tickets
+            if (!selectedEvent.getTickets().isEmpty()) {
+                System.out.println("This event already has tickets created.");
+                return;
+            }
+
+            int totalTickets = readInt("Enter Total Number of Tickets to Create: ");
+
+            double generalPrice = readDouble("Enter General Ticket Price: ");
+
+            // Crear tickets generales
+            List<model.ticket.Ticket> tempTickets = new ArrayList<>();
+            for (int i = 0; i < totalTickets; i++) {
+                int ticketId = tickets.size() + 1;
+                model.ticket.Ticket ticket = new model.ticket.Ticket(ticketId, "General", generalPrice, selectedEvent);
+                tempTickets.add(ticket);
+            }
+
+            System.out.println(totalTickets + " general tickets created successfully.");
+
+            int availableToCustomize = totalTickets;
+            while (true) {
+                System.out.print("Do you want to customize special tickets? (Y/N): ");
+                String response = scanner.nextLine();
+                if (response.equalsIgnoreCase("N")) {
+                    break;
+                } else if (response.equalsIgnoreCase("Y")) {
+                    int specialTickets = readInt("Enter number of Special Tickets: ");
+                    //scanner.nextLine();
+
+                    if (specialTickets > availableToCustomize) {
+                        System.out.println("[ERROR] You cannot customize more tickets than available (" + availableToCustomize + "). Try again.");
+                        continue;
+                    }
+
+                    System.out.print("Enter Special Ticket Type (e.g., VIP, Platinum): ");
+                    String specialType = scanner.nextLine();
+
+                    double specialPrice = readDouble("Enter Special Ticket Price: ");
+
+                    int customized = 0;
+                    for (model.ticket.Ticket ticket : tempTickets) {
+                        if (ticket.getType().equals("General")) {
+                            ticket.setType(specialType);
+                            ticket.setPrice(specialPrice);
+                            customized++;
+                            if (customized == specialTickets) {
+                                break;
+                            }
+                        }
+                    }
+                    availableToCustomize -= specialTickets;
+
+                    System.out.println(specialTickets + " tickets customized as " + specialType + ".");
+
+                    if (availableToCustomize == 0) {
+                        System.out.println("All tickets have been customized. No more tickets available.");
+                        break;
+                    }
+                } else {
+                    System.out.println("[ERROR]Invalid option. Please enter Y or N.");
+                }
+            }
+
+            // Finalmente, agregar todos los tickets a las listas principales
+            for (model.ticket.Ticket ticket : tempTickets) {
+                tickets.add(ticket);
+                selectedEvent.addTicket(ticket);
+            }
+
+            System.out.println("All tickets saved successfully for event: " + selectedEvent.getName());
+        }
+
+
+        private void listTickets() {
+            System.out.println("\n=== List of Tickets ===");
+            if (tickets.isEmpty()) {
+                System.out.println("No tickets created yet.");
+            } else {
+                for (model.ticket.Ticket ticket : tickets) {
+                    System.out.println("ID: " + ticket.getId() +
+                                       " | Type: " + ticket.getType() +
+                                       " | Price: " + ticket.getPrice() +
+                                       " | Event: " + ticket.getEvent().getName() +
+                                       " | Sold: " + (ticket.isSold() ? "Yes" : "No"));
+                }
+            }
+        }
 
     //STATISTICS
     private void viewStatistics() {
