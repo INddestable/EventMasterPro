@@ -72,7 +72,35 @@ public class EventMasterPro {
                     viewStatistics();
                     break;
                 case 0:
-                    System.out.println("Exiting EventMaster Pro...");
+                    System.out.println("Exiting EventMaster Pro, Have a good day!");
+                    break;
+                default:
+                    System.out.println("[ERROR] Invalid option. Try again.");
+            }
+        } while (option != 0);
+    }
+
+    //EVENTS
+    private void manageEvents() {
+        int option;
+        do {
+            System.out.println("\n=== Manage Events ===");
+            System.out.println("1. Create Event");
+            System.out.println("2. List Events");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Select an option: ");
+            option = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            switch (option) {
+                case 1:
+                    createEvent();
+                    break;
+                case 2:
+                    listEvents();
+                    break;
+                case 0:
+                    System.out.println("Returning to Main Menu...");
                     break;
                 default:
                     System.out.println("Invalid option. Try again.");
@@ -80,22 +108,67 @@ public class EventMasterPro {
         } while (option != 0);
     }
 
-    private void manageEvents() {
-        System.out.println("[Manage Events] - (To be implemented)");
-    }
+            private void createEvent() {
+                System.out.println("\n=== Create New Event ===");
 
+                System.out.print("Enter Event Name: ");
+                String name = scanner.nextLine();
+
+                System.out.print("Enter Event Date (DD-MM-YYYY): ");
+                String date = scanner.nextLine();
+
+                System.out.print("Enter Event Hour (HH:MM): ");
+                String hour = scanner.nextLine();
+
+                System.out.print("Enter Event Type (Concert, Conference, etc.): ");
+                String type = scanner.nextLine();
+
+                int newId = events.size() + 1; // Simple ID generator
+                Event event = new Event();
+                event.setId(newId);
+                event.setName(name);
+                event.setDate(date);
+                event.setHour(hour);
+                event.setType(type);
+                event.setStatus("Draft"); // Default status
+
+                events.add(event);
+
+                System.out.println("Event created successfully with ID: " + newId);
+            }
+
+            private void listEvents() {
+                System.out.println("\n=== List of Events ===");
+                if (events.isEmpty()) {
+                    System.out.println("No events registered yet.");
+                } else {
+                    for (Event event : events) {
+                        System.out.println("ID: " + event.getId() +
+                                           " | Name: " + event.getName() +
+                                           " | Date: " + event.getDate() +
+                                           " | Hour: " + event.getHour() +
+                                           " | Type: " + event.getType() +
+                                           " | Status: " + event.getStatus());
+                    }
+                }
+            }
+
+    //LOCATIONS
     private void manageLocations() {
         System.out.println("[Manage Locations] - (To be implemented)");
     }
 
+    //ARTISTS
     private void manageArtists() {
         System.out.println("[Manage Artists] - (To be implemented)");
     }
 
+    //TICKETS && SALES
     private void manageTicketsAndSales() {
         System.out.println("[Manage Tickets and Sales] - (To be implemented)");
     }
 
+    //STATISTICS
     private void viewStatistics() {
         System.out.println("[View Statistics] - (To be implemented)");
     }
