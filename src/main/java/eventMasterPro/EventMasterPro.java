@@ -218,7 +218,6 @@ public class EventMasterPro {
             String address = scanner.nextLine();
 
             int capacity = readInt("Enter Capacity");
-            scanner.nextLine();
 
             System.out.print("Enter Technical Features: ");
             String technicalFeatures = scanner.nextLine();
@@ -347,14 +346,13 @@ public class EventMasterPro {
             System.out.println("\n=== Create Tickets for Event ===");
 
             if (events.isEmpty()) {
-                System.out.println("No events available. Please create an event first.");
+                System.out.println("[ERROR] No events available. Please create an event first.");
                 return;
             }
 
             listEvents();
 
             int eventId = readInt("Enter Event ID to create tickets for: ");
-            //scanner.nextLine();
 
             Event selectedEvent = null;
             for (Event event : events) {
@@ -369,17 +367,31 @@ public class EventMasterPro {
                 return;
             }
 
-            // Comprobar si el evento ya tiene tickets
+            // Event have tickets now
             if (!selectedEvent.getTickets().isEmpty()) {
-                System.out.println("This event already has tickets created.");
+                System.out.println("[ERROR] This event already has tickets created.");
                 return;
             }
 
-            int totalTickets = readInt("Enter Total Number of Tickets to Create: ");
+            //Set total tickets
+            int totalTickets;
+            do {
+                totalTickets = readInt("Enter Total Number of Tickets to Create: ");
+                if (totalTickets <= 0) {
+                    System.out.println("[ERROR] The number of tickets must be greater than 0.");
+                }
+            } while (totalTickets <= 0);
 
-            double generalPrice = readDouble("Enter General Ticket Price: ");
+            //set general price
+            double generalPrice;
+            do {
+                generalPrice = readDouble("Enter General Ticket Price: ");
+                if (generalPrice <= 0) {
+                    System.out.println("[ERROR] The ticket price must be greater than 0.");
+                }
+            } while (generalPrice <= 0);
 
-            // Crear tickets generales
+            // Create general tickets
             List<model.ticket.Ticket> tempTickets = new ArrayList<>();
             for (int i = 0; i < totalTickets; i++) {
                 int ticketId = tickets.size() + 1;
@@ -389,6 +401,7 @@ public class EventMasterPro {
 
             System.out.println(totalTickets + " general tickets created successfully.");
 
+            //Customize new tickets
             int availableToCustomize = totalTickets;
             while (true) {
                 System.out.print("Do you want to customize special tickets? (Y/N): ");
@@ -396,18 +409,27 @@ public class EventMasterPro {
                 if (response.equalsIgnoreCase("N")) {
                     break;
                 } else if (response.equalsIgnoreCase("Y")) {
-                    int specialTickets = readInt("Enter number of Special Tickets: ");
-                    //scanner.nextLine();
-
-                    if (specialTickets > availableToCustomize) {
-                        System.out.println("[ERROR] You cannot customize more tickets than available (" + availableToCustomize + "). Try again.");
-                        continue;
-                    }
+                    int specialTickets;
+                    do {
+                        specialTickets = readInt("Enter number of Special Tickets: ");
+                        if (specialTickets <= 0) {
+                            System.out.println("[ERROR] The number of special tickets must be greater than 0.");
+                        } else if (specialTickets > availableToCustomize) {
+                            System.out.println("[ERROR] You cannot customize more tickets than available (" + availableToCustomize + "). Try again.");
+                            specialTickets = -1;
+                        }
+                    } while (specialTickets <= 0);
 
                     System.out.print("Enter Special Ticket Type (e.g., VIP, Platinum): ");
                     String specialType = scanner.nextLine();
 
-                    double specialPrice = readDouble("Enter Special Ticket Price: ");
+                    double specialPrice;
+                    do {
+                        specialPrice = readDouble("Enter Special Ticket Price: ");
+                        if (specialPrice <= 0) {
+                            System.out.println("[ERROR] The special ticket price must be greater than 0.");
+                        }
+                    } while (specialPrice <= 0);
 
                     int customized = 0;
                     for (model.ticket.Ticket ticket : tempTickets) {
@@ -425,15 +447,15 @@ public class EventMasterPro {
                     System.out.println(specialTickets + " tickets customized as " + specialType + ".");
 
                     if (availableToCustomize == 0) {
-                        System.out.println("All tickets have been customized. No more tickets available.");
+                        System.out.println("[ERROR] All tickets have been customized. No more tickets available.");
                         break;
                     }
                 } else {
-                    System.out.println("[ERROR]Invalid option. Please enter Y or N.");
+                    System.out.println("[ERROR] Invalid option. Please enter Y or N.");
                 }
             }
 
-            // Finalmente, agregar todos los tickets a las listas principales
+            //add modify tickets to the principal list
             for (model.ticket.Ticket ticket : tempTickets) {
                 tickets.add(ticket);
                 selectedEvent.addTicket(ticket);
@@ -441,6 +463,7 @@ public class EventMasterPro {
 
             System.out.println("All tickets saved successfully for event: " + selectedEvent.getName());
         }
+
 
 
         private void listTickets() {
