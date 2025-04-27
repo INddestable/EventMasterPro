@@ -68,8 +68,8 @@ public class Ticket {
         return sold;
     }
 
-    public void sell() {
-        this.sold = true;
+    public boolean setSold() {
+        return sold = true;
     }
 
     public boolean isValidated() {

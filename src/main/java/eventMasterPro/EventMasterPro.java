@@ -159,10 +159,10 @@ public class EventMasterPro {
 
             switch (option) {
                 case 1:
-                    System.out.println("[To be implemented] View Events.");
+                    viewEventsForAssistant();
                     break;
                 case 2:
-                    System.out.println("[To be implemented] Buy Tickets.");
+                    buyTickets();
                     break;
                 case 3:
                     System.out.println("[To be implemented] Validate Ticket.");
@@ -302,9 +302,10 @@ public class EventMasterPro {
                         + " | Date: " + event.getDate()
                         + " | Hour: " + event.getHour()
                         + " | Type: " + event.getType()
-                        + " | Location: " + event.getLocation()
+                        + " | Location: " + event.getLocation().getName()
                         + " | Artists: " + event.getArtists()
                         + " | Status: " + event.getStatus());
+                
             }
         }
     }
@@ -754,6 +755,111 @@ public class EventMasterPro {
         System.out.println("[View Statistics] - (To be implemented)");
     }
 
+    
+    private void viewEventsForAssistant() {
+        System.out.println("\n=== Available Events ===");
+
+        if (events.isEmpty()) {
+            System.out.println("No events available at the moment.");
+            return;
+        }
+
+        for (Event event : events) {
+            System.out.println("ID: " + event.getId() +
+                               " | Name: " + event.getName() +
+                               " | Date: " + event.getDate() +
+                               " | Hour: " + event.getHour() +
+                               " | Type: " + event.getType() +
+                               " | Artist: " + (event.getArtists()!= null ? event.getArtists(): "N/A") + 
+                               " | Location: " + (event.getLocation() != null ? event.getLocation().getName() : "N/A"));
+            
+        }
+
+        System.out.print("\nDo you want to buy tickets for an event? (Y/N): ");
+        String response = scanner.nextLine();
+        if (response.equalsIgnoreCase("Y")) {
+            buyTickets();
+        } else {
+            System.out.println("Returning to Assistant Menu...");
+        }
+    }
+
+    private void buyTickets() {
+        System.out.println("\n=== Buy Tickets ===");
+
+        if (events.isEmpty() || ticketsByEventType.isEmpty()) {
+            System.out.println("No tickets available at the moment.");
+            return;
+        }
+
+        // Mostrar eventos disponibles
+        List<Integer> eventIds = new ArrayList<>(ticketsByEventType.keySet());
+
+        for (int i = 0; i < eventIds.size(); i++) {
+            int eventId = eventIds.get(i);
+            Event event = findEventById(eventId);
+            if (event != null) {
+                System.out.println((i + 1) + ". ID: " + event.getId() + " | Name: " + event.getName());
+            }
+        }
+
+        int eventOption = readInt("Select an event to buy tickets from: ") - 1;
+        if (eventOption < 0 || eventOption >= eventIds.size()) {
+            System.out.println("[ERROR] Invalid event selection.");
+            return;
+        }
+
+        int selectedEventId = eventIds.get(eventOption);
+        Event selectedEvent = findEventById(selectedEventId);
+
+        if (selectedEvent == null) {
+            System.out.println("[ERROR] Event not found.");
+            return;
+        }
+
+        Map<String, List<Ticket>> ticketTypes = ticketsByEventType.get(selectedEventId);
+
+        // Mostrar tipos de tickets
+        System.out.println("\nAvailable Ticket Types:");
+        List<String> types = new ArrayList<>(ticketTypes.keySet());
+        for (int i = 0; i < types.size(); i++) {
+            String type = types.get(i);
+            long available = ticketTypes.get(type).stream().filter(t -> !t.isSold()).count();
+            System.out.println((i + 1) + ". " + type + " (" + available + " available)");
+        }
+
+        int typeOption = readInt("Select ticket type to buy: ") - 1;
+        if (typeOption < 0 || typeOption >= types.size()) {
+            System.out.println("[ERROR] Invalid ticket type selection.");
+            return;
+        }
+
+        String selectedType = types.get(typeOption);
+        List<Ticket> availableTickets = ticketTypes.get(selectedType);
+
+        // Buscar un ticket disponible (no vendido)
+        Ticket ticketToBuy = null;
+        for (Ticket ticket : availableTickets) {
+            if (!ticket.isSold()) {
+                ticketToBuy = ticket;
+                break;
+            }
+        }
+
+        if (ticketToBuy == null) {
+            System.out.println("[ERROR] No tickets available of this type.");
+            return;
+        }
+
+        ticketToBuy.setSold();
+        System.out.println("Ticket purchased successfully!");
+        System.out.println("Ticket ID: " + ticketToBuy.getId() +
+                           " | Type: " + ticketToBuy.getType() +
+                           " | Price: " + ticketToBuy.getPrice() +
+                           " | Event: " + selectedEvent.getName());
+    }
+
+    
     public static void main(String[] args) {
         EventMasterPro system = new EventMasterPro();
         system.start();
