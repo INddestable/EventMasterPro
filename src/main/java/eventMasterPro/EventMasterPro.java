@@ -14,6 +14,7 @@ import model.ticket.Sale;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -141,34 +142,92 @@ public class EventMasterPro {
         } while (option != 0);
     }
 
-            private void createEvent() {
-                System.out.println("\n=== Create New Event ===");
+        private void createEvent() {
+            System.out.println("\n=== Create New Event ===");
 
-                System.out.print("Enter Event Name: ");
-                String name = scanner.nextLine();
+            System.out.print("Enter Event Name: ");
+            String name = scanner.nextLine();
 
-                System.out.print("Enter Event Date (DD-MM-YYYY): ");
-                String date = scanner.nextLine();
+            System.out.print("Enter Event Date (DD-MM-YYYY): ");
+            String date = scanner.nextLine();
 
-                System.out.print("Enter Event Hour (HH:MM): ");
-                String hour = scanner.nextLine();
+            System.out.print("Enter Event Hour (HH:MM): ");
+            String hour = scanner.nextLine();
 
-                System.out.print("Enter Event Type (Concert, Conference, etc.): ");
-                String type = scanner.nextLine();
+            System.out.print("Enter Event Type (Concert, Conference, etc.): ");
+            String type = scanner.nextLine();
 
-                int newId = events.size() + 1; // Simple ID generator
-                Event event = new Event();
-                event.setId(newId);
-                event.setName(name);
-                event.setDate(date);
-                event.setHour(hour);
-                event.setType(type);
-                event.setStatus("Draft"); // Default status
+            //ARTIST
+                if (artists.isEmpty()) {
+                    System.out.println("[ERROR] No artists registered. You need to register at least one.");
+                    registerArtist();
+                }
 
-                events.add(event);
+                // Available Artist
+                System.out.println("\nAvailable Artists:");
+                for (Artist artist : artists) {
+                    System.out.println(artist.getId() + ". " + artist.getName());
+                }
 
-                System.out.println("Event created successfully with ID: " + newId);
-            }
+                int artistId = readInt("Enter Artist ID to assign to this event: ");
+                Artist selectedArtist = null;
+                for (Artist artist : artists) {
+                    if (artist.getId() == artistId) {
+                        selectedArtist = artist;
+                        break;
+                    }
+                }
+
+                if (selectedArtist == null) {
+                    System.out.println("[ERROR] Artist not found. Event creation cancelled.");
+                    return;
+                }
+
+            //LOCATON
+                if (locations.isEmpty()) {
+                    System.out.println("[ERROR] No locations registered. You need to create at least one.");
+                    createLocation();
+                }
+
+                // available Locations:
+                System.out.println("\nAvailable Locations:");
+                for (Location location : locations) {
+                    System.out.println(location.getId() + ". " + location.getName() + " (Capacity: " + location.getCapacity() + ")");
+                }
+
+                int locationId = readInt("Enter Location ID to assign to this event: ");
+                Location selectedLocation = null;
+                for (Location location : locations) {
+                    if (location.getId() == locationId) {
+                        selectedLocation = location;
+                        break;
+                    }
+                }
+
+                if (selectedLocation == null) {
+                    System.out.println("[ERROR] Location not found. Event creation cancelled.");
+                    return;
+                }
+                
+            System.out.println("\n===== ADVICE ===== \n Please remember create Tickets After the creation of this event");
+              
+            // --- Creación del Evento ---
+            int newId = events.size() + 1; // Simple ID generator
+            Event event = new Event();
+            event.setId(newId);
+            event.setName(name);
+            event.setDate(date);
+            event.setHour(hour);
+            event.setType(type);
+            event.setStatus("Complete"); // Default status
+            event.setLocation(selectedLocation);
+            event.addArtist(selectedArtist);
+
+            events.add(event);
+
+            System.out.println("Event created successfully with ID: " + newId);
+        }
+
 
             private void listEvents() {
                 System.out.println("\n=== List of Events ===");
@@ -177,10 +236,12 @@ public class EventMasterPro {
                 } else {
                     for (Event event : events) {
                         System.out.println("ID: " + event.getId() +
-                                           " | Name: " + event.getName() +
-                                           " | Date: " + event.getDate() +
-                                           " | Hour: " + event.getHour() +
-                                           " | Type: " + event.getType() +
+                                           " | Name: "  + event.getName() +
+                                           " | Date: "  + event.getDate() +
+                                           " | Hour: "  + event.getHour() +
+                                           " | Type: "  + event.getType() +
+                                           " | Location: " + event.getLocation() +
+                                           " | Artists: " + event.getArtists() +
                                            " | Status: " + event.getStatus());
                     }
                 }
@@ -221,12 +282,12 @@ public class EventMasterPro {
             System.out.print("Enter Address: ");
             String address = scanner.nextLine();
 
-            int capacity = readInt("Enter Capacity");
+            int capacity = readInt("Enter Capacity: ");
 
             System.out.print("Enter Technical Features: ");
             String technicalFeatures = scanner.nextLine();
 
-            int newId = locations.size() + 1; // Simple ID generator
+            int newId = locations.size() + 1;
             model.location.Location location = new model.location.Location();
             location.setId(newId);
             location.setName(name);
@@ -327,7 +388,7 @@ public class EventMasterPro {
             System.out.println("\n=== Manage Tickets and Sales ===");
             System.out.println("1. Create Tickets for Event");
             System.out.println("2. List Tickets");
-            System.out.println("3. Modify Tickets");
+            //System.out.println("3. Modify Tickets");
             System.out.println("0. Back to Main Menu");
             option = readInt("Select an option: ");
 
@@ -338,9 +399,9 @@ public class EventMasterPro {
                 case 2:
                     listTickets();
                     break;
-                case 3:
-                    modifyTickets();
-                    break;
+                /*case 3:
+                    //modifyTickets();
+                    break;*/
                 case 0:
                     System.out.println("Returning to Main Menu...");
                     break;
@@ -443,22 +504,27 @@ public class EventMasterPro {
                     } while (specialPrice <= 0);
 
                     List<Ticket> specialTicketList = new ArrayList<>();
+                    List<Ticket> generalList = ticketTypes.get("General"); // obtener la lista general actual
 
                     int customized = 0;
-                    for (Ticket ticket : generalTickets) {
+                    Iterator<Ticket> iterator = generalList.iterator();
+                    while (iterator.hasNext() && customized < specialTickets) {
+                        Ticket ticket = iterator.next();
                         if (ticket.getType().equals("General")) {
                             ticket.setType(specialType);
                             ticket.setPrice(specialPrice);
-                            customized++;
                             specialTicketList.add(ticket);
-                            if (customized == specialTickets) {
-                                break;
-                            }
+                            iterator.remove();
+                            customized++;
                         }
                     }
 
                     // Guardar los tickets especiales por tipo
-                    ticketTypes.put(specialType, specialTicketList);
+                    if (ticketTypes.containsKey(specialType)) {
+                        ticketTypes.get(specialType).addAll(specialTicketList);
+                    } else {
+                        ticketTypes.put(specialType, specialTicketList);
+                    }
 
                     availableToCustomize -= specialTickets;
 
@@ -481,42 +547,62 @@ public class EventMasterPro {
 
 
         private void listTickets() {
-            System.out.println("\n=== List of Tickets Organized by Event and Type ===");
+            System.out.println("\n=== List Tickets by Event ===");
 
             if (ticketsByEventType.isEmpty()) {
                 System.out.println("No tickets created yet.");
                 return;
             }
 
-            for (Integer eventId : ticketsByEventType.keySet()) {
-                Event event = null;
-                for (Event e : events) {
-                    if (e.getId() == eventId) {
-                        event = e;
-                        break;
-                    }
-                }
+            List<Integer> eventIds = new ArrayList<>(ticketsByEventType.keySet());
 
+            // Available Events
+            for (int i = 0; i < eventIds.size(); i++) {
+                int eventId = eventIds.get(i);
+                Event event = findEventById(eventId);
                 if (event != null) {
-                    System.out.println("\nEvent ID: " + event.getId() + " | Event Name: " + event.getName());
-
-                    Map<String, List<Ticket>> ticketTypes = ticketsByEventType.get(eventId);
-
-                    for (String type : ticketTypes.keySet()) {
-                        System.out.println("  Ticket Type: " + type);
-
-                        List<Ticket> ticketList = ticketTypes.get(type);
-                        for (Ticket ticket : ticketList) {
-                            System.out.println("    Ticket ID: " + ticket.getId() +
-                                               " | Price: " + ticket.getPrice() +
-                                               " | Sold: " + (ticket.isSold() ? "Yes" : "No"));
-                        }
-                    }
+                    System.out.println((i + 1) + ". ID: " + event.getId() + " | Name: " + event.getName());
                 }
+            }
+
+            int eventOption = readInt("Select an event to view its ticket types: ") - 1;
+
+            if (eventOption < 0 || eventOption >= eventIds.size()) {
+                System.out.println("[ERROR] Invalid selection.");
+                return;
+            }
+
+            int selectedEventId = eventIds.get(eventOption);
+            Event selectedEvent = findEventById(selectedEventId);
+
+            if (selectedEvent == null) {
+                System.out.println("[ERROR] Event not found.");
+                return;
+            }
+
+            System.out.println("\n=== Ticket Types for Event: " + selectedEvent.getName() + " ===");
+
+            Map<String, List<Ticket>> ticketTypes = ticketsByEventType.get(selectedEventId);
+
+            int typeNumber = 1;
+            for (String type : ticketTypes.keySet()) {
+                int amount = ticketTypes.get(type).size();
+                System.out.println(typeNumber + ". " + type + " (" + amount + " tickets)");
+                typeNumber++;
             }
         }
 
+        // Search Event By ID
+        private Event findEventById(int eventId) {
+            for (Event event : events) {
+                if (event.getId() == eventId) {
+                    return event;
+                }
+            }
+            return null;
+        }
 
+        /*
         private void modifyTickets() {
             System.out.println("\n=== Modify Tickets ===");
 
@@ -603,7 +689,8 @@ public class EventMasterPro {
                 System.out.println("Ticket updated successfully.");
             }
         }
-
+        */
+        
     //STATISTICS
     private void viewStatistics() {
         System.out.println("[View Statistics] - (To be implemented)");
