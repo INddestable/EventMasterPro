@@ -13,7 +13,9 @@ import model.ticket.Ticket;
 import model.ticket.Sale;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 /**
  *
@@ -25,6 +27,7 @@ public class EventMasterPro {
     private List<Artist> artists;
     private List<Assistant> assistants;
     private List<Administrator> administrators;
+    private Map<Integer, Map<String, List<Ticket>>> ticketsByEventType;
     private List<Ticket> tickets;
     private List<Sale> sales;
 
@@ -38,6 +41,7 @@ public class EventMasterPro {
         administrators = new ArrayList<>();
         tickets = new ArrayList<>();
         sales = new ArrayList<>();
+        ticketsByEventType = new HashMap<>();
         scanner = new Scanner(System.in);
     }
     
@@ -323,6 +327,7 @@ public class EventMasterPro {
             System.out.println("\n=== Manage Tickets and Sales ===");
             System.out.println("1. Create Tickets for Event");
             System.out.println("2. List Tickets");
+            System.out.println("3. Modify Tickets");
             System.out.println("0. Back to Main Menu");
             option = readInt("Select an option: ");
 
@@ -332,6 +337,9 @@ public class EventMasterPro {
                     break;
                 case 2:
                     listTickets();
+                    break;
+                case 3:
+                    modifyTickets();
                     break;
                 case 0:
                     System.out.println("Returning to Main Menu...");
@@ -346,7 +354,7 @@ public class EventMasterPro {
             System.out.println("\n=== Create Tickets for Event ===");
 
             if (events.isEmpty()) {
-                System.out.println("[ERROR] No events available. Please create an event first.");
+                System.out.println("No events available. Please create an event first.");
                 return;
             }
 
@@ -367,13 +375,12 @@ public class EventMasterPro {
                 return;
             }
 
-            // Event have tickets now
-            if (!selectedEvent.getTickets().isEmpty()) {
-                System.out.println("[ERROR] This event already has tickets created.");
+            // Comprobar si el evento ya tiene tickets en el nuevo sistema
+            if (ticketsByEventType.containsKey(eventId)) {
+                System.out.println("This event already has tickets created.");
                 return;
             }
 
-            //Set total tickets
             int totalTickets;
             do {
                 totalTickets = readInt("Enter Total Number of Tickets to Create: ");
@@ -382,7 +389,6 @@ public class EventMasterPro {
                 }
             } while (totalTickets <= 0);
 
-            //set general price
             double generalPrice;
             do {
                 generalPrice = readDouble("Enter General Ticket Price: ");
@@ -391,17 +397,22 @@ public class EventMasterPro {
                 }
             } while (generalPrice <= 0);
 
-            // Create general tickets
-            List<model.ticket.Ticket> tempTickets = new ArrayList<>();
+            // Crear el mapa para este evento
+            Map<String, List<Ticket>> ticketTypes = new HashMap<>();
+
+            // Crear tickets generales
+            List<Ticket> generalTickets = new ArrayList<>();
             for (int i = 0; i < totalTickets; i++) {
-                int ticketId = tickets.size() + 1;
-                model.ticket.Ticket ticket = new model.ticket.Ticket(ticketId, "General", generalPrice, selectedEvent);
-                tempTickets.add(ticket);
+                int ticketId = tickets.size() + 1; // IDs globales siguen sumando
+                Ticket ticket = new Ticket(ticketId, "General", generalPrice, selectedEvent);
+                generalTickets.add(ticket);
+                tickets.add(ticket); // opcional, mantener la vista global
+                selectedEvent.addTicket(ticket); // también en el evento
             }
+            ticketTypes.put("General", generalTickets);
 
             System.out.println(totalTickets + " general tickets created successfully.");
 
-            //Customize new tickets
             int availableToCustomize = totalTickets;
             while (true) {
                 System.out.print("Do you want to customize special tickets? (Y/N): ");
@@ -431,23 +442,30 @@ public class EventMasterPro {
                         }
                     } while (specialPrice <= 0);
 
+                    List<Ticket> specialTicketList = new ArrayList<>();
+
                     int customized = 0;
-                    for (model.ticket.Ticket ticket : tempTickets) {
+                    for (Ticket ticket : generalTickets) {
                         if (ticket.getType().equals("General")) {
                             ticket.setType(specialType);
                             ticket.setPrice(specialPrice);
                             customized++;
+                            specialTicketList.add(ticket);
                             if (customized == specialTickets) {
                                 break;
                             }
                         }
                     }
+
+                    // Guardar los tickets especiales por tipo
+                    ticketTypes.put(specialType, specialTicketList);
+
                     availableToCustomize -= specialTickets;
 
                     System.out.println(specialTickets + " tickets customized as " + specialType + ".");
 
                     if (availableToCustomize == 0) {
-                        System.out.println("[ERROR] All tickets have been customized. No more tickets available.");
+                        System.out.println("All tickets have been customized. No more tickets available.");
                         break;
                     }
                 } else {
@@ -455,29 +473,134 @@ public class EventMasterPro {
                 }
             }
 
-            //add modify tickets to the principal list
-            for (model.ticket.Ticket ticket : tempTickets) {
-                tickets.add(ticket);
-                selectedEvent.addTicket(ticket);
-            }
+            // Finalmente guardar todo el mapa de tipos de ticket en el evento
+            ticketsByEventType.put(eventId, ticketTypes);
 
             System.out.println("All tickets saved successfully for event: " + selectedEvent.getName());
         }
 
 
-
         private void listTickets() {
-            System.out.println("\n=== List of Tickets ===");
-            if (tickets.isEmpty()) {
+            System.out.println("\n=== List of Tickets Organized by Event and Type ===");
+
+            if (ticketsByEventType.isEmpty()) {
                 System.out.println("No tickets created yet.");
-            } else {
-                for (model.ticket.Ticket ticket : tickets) {
-                    System.out.println("ID: " + ticket.getId() +
-                                       " | Type: " + ticket.getType() +
-                                       " | Price: " + ticket.getPrice() +
-                                       " | Event: " + ticket.getEvent().getName() +
-                                       " | Sold: " + (ticket.isSold() ? "Yes" : "No"));
+                return;
+            }
+
+            for (Integer eventId : ticketsByEventType.keySet()) {
+                Event event = null;
+                for (Event e : events) {
+                    if (e.getId() == eventId) {
+                        event = e;
+                        break;
+                    }
                 }
+
+                if (event != null) {
+                    System.out.println("\nEvent ID: " + event.getId() + " | Event Name: " + event.getName());
+
+                    Map<String, List<Ticket>> ticketTypes = ticketsByEventType.get(eventId);
+
+                    for (String type : ticketTypes.keySet()) {
+                        System.out.println("  Ticket Type: " + type);
+
+                        List<Ticket> ticketList = ticketTypes.get(type);
+                        for (Ticket ticket : ticketList) {
+                            System.out.println("    Ticket ID: " + ticket.getId() +
+                                               " | Price: " + ticket.getPrice() +
+                                               " | Sold: " + (ticket.isSold() ? "Yes" : "No"));
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void modifyTickets() {
+            System.out.println("\n=== Modify Tickets ===");
+
+            if (events.isEmpty()) {
+                System.out.println("No events available.");
+                return;
+            }
+
+            listEvents(); // Muestra eventos disponibles
+
+            int eventId = readInt("Enter Event ID to modify tickets: ");
+
+            Event selectedEvent = null;
+            for (Event event : events) {
+                if (event.getId() == eventId) {
+                    selectedEvent = event;
+                    break;
+                }
+            }
+
+            if (selectedEvent == null) {
+                System.out.println("[ERROR] Event not found.");
+                return;
+            }
+
+            if (selectedEvent.getTickets().isEmpty()) {
+                System.out.println("This event has no tickets to modify.");
+                return;
+            }
+
+            // Listar tickets de este evento
+            System.out.println("\nTickets for event: " + selectedEvent.getName());
+            for (model.ticket.Ticket ticket : selectedEvent.getTickets()) {
+                System.out.println("Ticket ID: " + ticket.getId() +
+                                   " | Type: " + ticket.getType() +
+                                   " | Price: " + ticket.getPrice() +
+                                   " | Sold: " + (ticket.isSold() ? "Yes" : "No"));
+            }
+
+            int ticketId = readInt("Enter Ticket ID to modify: ");
+
+            model.ticket.Ticket selectedTicket = null;
+            for (model.ticket.Ticket ticket : selectedEvent.getTickets()) {
+                if (ticket.getId() == ticketId) {
+                    selectedTicket = ticket;
+                    break;
+                }
+            }
+
+            if (selectedTicket == null) {
+                System.out.println("[ERROR] Ticket not found.");
+                return;
+            }
+
+            if (selectedTicket.isSold()) {
+                System.out.println("[ERROR] Cannot modify a ticket that has already been sold.");
+                return;
+            }
+
+            System.out.println("\nCurrent Type: " + selectedTicket.getType());
+            System.out.print("Enter new Type (or press Enter to keep current): ");
+            String newType = scanner.nextLine();
+            if (!newType.trim().isEmpty()) {
+                selectedTicket.setType(newType);
+            }
+
+            System.out.println("Current Price: " + selectedTicket.getPrice());
+            String priceInput;
+            System.out.print("Enter new Price (or press Enter to keep current): ");
+            priceInput = scanner.nextLine();
+            if (!priceInput.trim().isEmpty()) {
+                try {
+                    double newPrice = Double.parseDouble(priceInput);
+                    if (newPrice <= 0) {
+                        System.out.println("[ERROR] The price must be greater than 0. Modification cancelled.");
+                    } else {
+                        selectedTicket.setPrice(newPrice);
+                        System.out.println("Ticket updated successfully.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("[ERROR] Invalid price format. Modification cancelled.");
+                }
+            } else {
+                System.out.println("Ticket updated successfully.");
             }
         }
 
