@@ -46,5 +46,5 @@ public class Artist extends Person {
     @Override
     public void showProfile() {
         System.out.println("Artist: " + name + " (" + contact + ")");
-    }
+    }  
 }

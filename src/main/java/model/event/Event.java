@@ -96,8 +96,12 @@ public class Event {
         this.location = location;
     }
 
-    public List<Artist> getArtists() {
-        return artists;
+    public String getArtists() {
+        String artistName = null;
+        for (model.person.Artist artist : artists) {
+             artistName = artist.getName();         
+        }
+        return artistName;
     }
 
     public void addArtist(Artist artist) {
