@@ -166,7 +166,7 @@ public class EventMasterPro {
                     buyTickets();
                     break;
                 case 3:
-                    System.out.println("[To be implemented] Validate Ticket.");
+                    validateTicket();
                     break;
                 case 4:
                     System.out.println("[To be implemented] View My History.");
@@ -861,6 +861,42 @@ public class EventMasterPro {
                            " | Event: " + selectedEvent.getName());
     }
 
+    private void validateTicket() {
+        System.out.println("\n=== Validate Ticket ===");
+
+        if (tickets.isEmpty()) {
+            System.out.println("No tickets available.");
+            return;
+        }
+
+        int ticketId = readInt("Enter Ticket ID to validate: ");
+
+        Ticket ticketToValidate = null;
+        for (Ticket ticket : tickets) {
+            if (ticket.getId() == ticketId) {
+                ticketToValidate = ticket;
+                break;
+            }
+        }
+
+        if (ticketToValidate == null) {
+            System.out.println("[ERROR] Ticket not found.");
+            return;
+        }
+
+        if (!ticketToValidate.isSold()) {
+            System.out.println("[ERROR] This ticket has not been sold yet.");
+            return;
+        }
+
+        if (ticketToValidate.isValidated()) {
+            System.out.println("[INFO] This ticket was already validated.");
+            return;
+        }
+
+        ticketToValidate.isValidated();
+        System.out.println("Ticket validated successfully! ");
+    }
     
     public static void main(String[] args) {
         EventMasterPro system = new EventMasterPro();
