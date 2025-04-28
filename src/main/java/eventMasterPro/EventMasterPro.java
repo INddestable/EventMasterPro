@@ -169,7 +169,7 @@ public class EventMasterPro {
                     validateTicket();
                     break;
                 case 4:
-                    System.out.println("[To be implemented] View My History.");
+                    viewMyHistory();
                     break;
                 case 0:
                     System.out.println("Returning to Role Selection...");
@@ -794,7 +794,7 @@ public class EventMasterPro {
             return;
         }
 
-        // Mostrar eventos disponibles
+        // available events
         List<Integer> eventIds = new ArrayList<>(ticketsByEventType.keySet());
 
         for (int i = 0; i < eventIds.size(); i++) {
@@ -821,7 +821,7 @@ public class EventMasterPro {
 
         Map<String, List<Ticket>> ticketTypes = ticketsByEventType.get(selectedEventId);
 
-        // Mostrar tipos de tickets
+        // avaliable ticket types
         System.out.println("\nAvailable Ticket Types:");
         List<String> types = new ArrayList<>(ticketTypes.keySet());
         for (int i = 0; i < types.size(); i++) {
@@ -839,7 +839,7 @@ public class EventMasterPro {
         String selectedType = types.get(typeOption);
         List<Ticket> availableTickets = ticketTypes.get(selectedType);
 
-        // Buscar un ticket disponible (no vendido)
+        // Search no sold ticket
         Ticket ticketToBuy = null;
         for (Ticket ticket : availableTickets) {
             if (!ticket.isSold()) {
@@ -897,6 +897,27 @@ public class EventMasterPro {
         ticketToValidate.isValidated();
         System.out.println("Ticket validated successfully! ");
     }
+    
+    private void viewMyHistory() {
+        System.out.println("\n=== My Ticket History ===");
+
+        boolean hasTickets = false;
+        for (Ticket ticket : tickets) {
+            if (ticket.isSold()) {
+                System.out.println("Ticket ID: " + ticket.getId() +
+                                   " | Event: " + ticket.getEvent().getName() +
+                                   " | Type: " + ticket.getType() +
+                                   " | Price: " + ticket.getPrice() +
+                                   " | Validated: " + (ticket.isValidated() ? "Yes" : "No"));
+                hasTickets = true;
+            }
+        }
+
+        if (!hasTickets) {
+            System.out.println("No tickets purchased yet.");
+        }
+    }
+
     
     public static void main(String[] args) {
         EventMasterPro system = new EventMasterPro();
