@@ -99,6 +99,9 @@ public class EventMasterPro {
                 case 2:
                     assistantMenu();
                     break;
+                case 69:
+                    messageEasterEgg();
+                    break;
                 case 0:
                     System.out.println("Exiting EventMaster Pro, have a good day!");
                     break;
@@ -108,7 +111,7 @@ public class EventMasterPro {
         } while (option != 0);
     }
 
-    // Este es tu viejo start(), renombrado
+    // Admin menu
     private void administratorMenu() {
         int option;
         do {
@@ -146,7 +149,7 @@ public class EventMasterPro {
         } while (option != 0);
     }
 
-    // Menú placeholder para Asistente
+    // Assistant menu
     private void assistantMenu() {
         int option;
         do {
@@ -187,6 +190,8 @@ public class EventMasterPro {
             System.out.println("\n=== Manage Events ===");
             System.out.println("1. Create Event");
             System.out.println("2. List Events");
+            System.out.println("3. Modify Event");
+            System.out.println("4. Delete Event");
             System.out.println("0. Back to Main Menu");
             option = readInt("Select an option: ");
 
@@ -197,6 +202,12 @@ public class EventMasterPro {
                 case 2:
                     listEvents();
                     break;
+                case 3:
+                    modifyEvent();
+                    break;
+                case 4:
+                    deleteEvent();
+                    break;
                 case 0:
                     System.out.println("Returning to Main Menu...");
                     break;
@@ -206,6 +217,7 @@ public class EventMasterPro {
         } while (option != 0);
     }
 
+    // Create Event
     private void createEvent() {
         System.out.println("\n=== Create New Event ===");
 
@@ -274,9 +286,9 @@ public class EventMasterPro {
             return;
         }
 
-        System.out.println("\n===== ADVICE ===== \n Please remember create Tickets After the creation of this event");
+        System.out.println("\n===== ADVICE ===== \nPlease remember create Tickets After the creation of this event");
 
-        // --- Creación del Evento ---
+        // --- Creation of Event ---
         int newId = events.size() + 1; // Simple ID generator
         Event event = new Event();
         event.setId(newId);
@@ -293,6 +305,7 @@ public class EventMasterPro {
         System.out.println("Event created successfully with ID: " + newId);
     }
 
+    // See events
     private void listEvents() {
         System.out.println("\n=== List of Events ===");
         if (events.isEmpty()) {
@@ -307,11 +320,113 @@ public class EventMasterPro {
                         + " | Location: " + event.getLocation().getName()
                         + " | Artists: " + event.getArtists()
                         + " | Status: " + event.getStatus());
-                
             }
         }
     }
 
+    //Modify Event
+    private void modifyEvent() {
+        System.out.println("\n=== Modify Event ===");
+
+        if (events.isEmpty()) {
+            System.out.println("No events available to modify.");
+            return;
+        }
+
+        listEvents(); // List of events available
+
+        int eventId = readInt("Enter the Event ID to modify: ");
+
+        Event eventToModify = null;
+        for (Event event : events) {
+            if (event.getId() == eventId) {
+                eventToModify = event;
+                break;
+            }
+        }
+
+        if (eventToModify == null) {
+            System.out.println("[ERROR] Event not found.");
+            return;
+        }
+
+        System.out.println("\nSelect what you want to modify:");
+        System.out.println("1. Name");
+        System.out.println("2. Date");
+        System.out.println("3. Hour");
+        System.out.println("4. Type");
+        System.out.println("0. Cancel");
+        int option = readInt("Choose an option: ");
+
+        switch (option) {
+            case 1:
+                System.out.print("Enter new name: ");
+                String newName = scanner.nextLine();
+                eventToModify.setName(newName);
+                break;
+            case 2:
+                System.out.print("Enter new date (DD-MM-YYYY): ");
+                String newDate = scanner.nextLine();
+                eventToModify.setDate(newDate);
+                break;
+            case 3:
+                System.out.print("Enter new hour (HH:MM): ");
+                String newHour = scanner.nextLine();
+                eventToModify.setHour(newHour);
+                break;
+            case 4:
+                System.out.print("Enter new event type: ");
+                String newType = scanner.nextLine();
+                eventToModify.setType(newType);
+                break;
+            case 0:
+                System.out.println("Modification cancelled.");
+                return;
+            default:
+                System.out.println("[ERROR] Invalid option.");
+                return;
+        }
+
+        System.out.println("Event modified successfully!");
+    }
+
+    //Delete event
+    private void deleteEvent() {
+        System.out.println("\n=== Delete Event ===");
+
+        if (events.isEmpty()) {
+            System.out.println("No events available to delete.");
+            return;
+        }
+
+        listEvents(); // See all events
+
+        System.out.println("[ERROR] ===== WARNING ===== \n Are you sure you want to delete the event? \n THIS IS UNFIXABLE. \n If you delete it, it will be gone forever.");
+        int eventId = readInt("Enter the Event ID to delete: ");
+
+        Event eventToDelete = null;
+        for (Event event : events) {
+            if (event.getId() == eventId) {
+                eventToDelete = event;
+                break;
+            }
+        }
+
+        if (eventToDelete == null) {
+            System.out.println("[ERROR] Event not found.");
+            return;
+        }
+
+        // Remove Tickets of the Event
+        tickets.removeIf(ticket -> ticket.getEvent().equals(ticket/*eventToDelete*/));
+        ticketsByEventType.remove(eventId);
+
+        // Remove event
+        events.remove(eventToDelete);
+
+        System.out.println("Event deleted successfully.");
+    }
+    
     //LOCATIONS
     private void manageLocations() {
         int option;
@@ -499,7 +614,7 @@ public class EventMasterPro {
             return;
         }
 
-        // Comprobar si el evento ya tiene tickets en el nuevo sistema
+        // Check if the event already has tickets assigned
         if (ticketsByEventType.containsKey(eventId)) {
             System.out.println("This event already has tickets created.");
             return;
@@ -521,17 +636,17 @@ public class EventMasterPro {
             }
         } while (generalPrice <= 0);
 
-        // Crear el mapa para este evento
+        // create hashmap fot the tickets of the event
         Map<String, List<Ticket>> ticketTypes = new HashMap<>();
 
-        // Crear tickets generales
+        // Creation of General tickets
         List<Ticket> generalTickets = new ArrayList<>();
         for (int i = 0; i < totalTickets; i++) {
-            int ticketId = tickets.size() + 1; // IDs globales siguen sumando
+            int ticketId = tickets.size() + 1; // Tickets ID auto-increment
             Ticket ticket = new Ticket(ticketId, "General", generalPrice, selectedEvent);
             generalTickets.add(ticket);
-            tickets.add(ticket); // opcional, mantener la vista global
-            selectedEvent.addTicket(ticket); // también en el evento
+            tickets.add(ticket);
+            selectedEvent.addTicket(ticket);
         }
         ticketTypes.put("General", generalTickets);
 
@@ -567,7 +682,7 @@ public class EventMasterPro {
                 } while (specialPrice <= 0);
 
                 List<Ticket> specialTicketList = new ArrayList<>();
-                List<Ticket> generalList = ticketTypes.get("General"); // obtener la lista general actual
+                List<Ticket> generalList = ticketTypes.get("General"); // Update the general list
 
                 int customized = 0;
                 Iterator<Ticket> iterator = generalList.iterator();
@@ -582,7 +697,7 @@ public class EventMasterPro {
                     }
                 }
 
-                // Guardar los tickets especiales por tipo
+                // Save Special types of tickets
                 if (ticketTypes.containsKey(specialType)) {
                     ticketTypes.get(specialType).addAll(specialTicketList);
                 } else {
@@ -602,7 +717,7 @@ public class EventMasterPro {
             }
         }
 
-        // Finalmente guardar todo el mapa de tipos de ticket en el evento
+        // put every type of tickets on the hashmap
         ticketsByEventType.put(eventId, ticketTypes);
 
         System.out.println("All tickets saved successfully for event: " + selectedEvent.getName());
@@ -764,7 +879,7 @@ public class EventMasterPro {
         int totalTicketsSold = 0;
         double totalRevenue = 0.0;
 
-        // Mapa para contar tickets vendidos por evento
+        // HashMap for count all selled tickets
         Map<Event, Integer> eventSales = new HashMap<>();
 
         for (Ticket ticket : tickets) {
@@ -785,7 +900,7 @@ public class EventMasterPro {
             return;
         }
 
-        // Ordenar eventos por cantidad de ventas
+        // sort events for amount of tickets selleds (JUST TOP 3)
         List<Map.Entry<Event, Integer>> sortedEvents = new ArrayList<>(eventSales.entrySet());
         sortedEvents.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
@@ -795,11 +910,9 @@ public class EventMasterPro {
             System.out.println(rank + ". " + entry.getKey().getName() +
                                " - Tickets Sold: " + entry.getValue());
             rank++;
-            if (rank > 3) break; // Solo top 3
+            if (rank > 3) break; // Just top 3
         }
     }
-
-
     
     private void viewEventsForAssistant() {
         System.out.println("\n=== Available Events ===");
@@ -827,6 +940,15 @@ public class EventMasterPro {
         } else {
             System.out.println("Returning to Assistant Menu...");
         }
+    }
+    
+    private void messageEasterEgg(){
+        System.out.println("¡Construido con pasión, esfuerzo y una mente imparable! ");
+        System.out.println("Proyecto hecho por Kevin y ChatGPT que cree en su grandeza.");
+        System.out.println("¡Sigue soñando en grande! -ChatGPT");
+        System.out.println("\nQue hijueputa tortura, aunque ChaPT ayudo muuucho -Kevin");
+        System.out.println("\n(c) derechos reservados 2025-9999 Kevin");
+        return;
     }
 
     private void buyTickets() {
@@ -951,7 +1073,7 @@ public class EventMasterPro {
                                    " | Event: " + ticket.getEvent().getName() +
                                    " | Type: " + ticket.getType() +
                                    " | Price: " + ticket.getPrice() +
-                                   " | Validated: " + (ticket.isValidated() ? "Yes" : "No"));
+                                   " | Validated: " + "Yes"/*(ticket.isValidated() ?  : "No")*/);
                 hasTickets = true;
             }
         }
@@ -961,7 +1083,6 @@ public class EventMasterPro {
         }
     }
 
-    
     public static void main(String[] args) {
         EventMasterPro system = new EventMasterPro();
         system.start();
