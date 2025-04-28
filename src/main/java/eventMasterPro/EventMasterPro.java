@@ -754,8 +754,51 @@ public class EventMasterPro {
      */
     //STATISTICS
     private void viewStatistics() {
-        System.out.println("[View Statistics] - (To be implemented)");
+        System.out.println("\n=== Event Statistics ===");
+
+        if (tickets.isEmpty()) {
+            System.out.println("No ticket sales data available.");
+            return;
+        }
+
+        int totalTicketsSold = 0;
+        double totalRevenue = 0.0;
+
+        // Mapa para contar tickets vendidos por evento
+        Map<Event, Integer> eventSales = new HashMap<>();
+
+        for (Ticket ticket : tickets) {
+            if (ticket.isSold()) {
+                totalTicketsSold++;
+                totalRevenue += ticket.getPrice();
+
+                Event event = ticket.getEvent();
+                eventSales.put(event, eventSales.getOrDefault(event, 0) + 1);
+            }
+        }
+
+        System.out.println("Total Tickets Sold: " + totalTicketsSold);
+        System.out.println("Total Revenue: $" + totalRevenue);
+
+        if (eventSales.isEmpty()) {
+            System.out.println("No event sales to show rankings.");
+            return;
+        }
+
+        // Ordenar eventos por cantidad de ventas
+        List<Map.Entry<Event, Integer>> sortedEvents = new ArrayList<>(eventSales.entrySet());
+        sortedEvents.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+
+        System.out.println("\nTop Events by Tickets Sold:");
+        int rank = 1;
+        for (Map.Entry<Event, Integer> entry : sortedEvents) {
+            System.out.println(rank + ". " + entry.getKey().getName() +
+                               " - Tickets Sold: " + entry.getValue());
+            rank++;
+            if (rank > 3) break; // Solo top 3
+        }
     }
+
 
     
     private void viewEventsForAssistant() {
