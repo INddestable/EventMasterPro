@@ -559,7 +559,7 @@ public class EventMasterPro {
         }
     }
 
-    //TICKETS && SALES
+    //TICKE+TS && SALES
     private void manageTicketsAndSales() {
         int option;
         do {
