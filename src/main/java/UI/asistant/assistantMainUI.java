@@ -64,6 +64,9 @@ public class assistantMainUI extends javax.swing.JFrame {
             .addGap(0, 685, Short.MAX_VALUE)
         );
 
+        jMenuBar1.setBackground(new java.awt.Color(0, 102, 255));
+        jMenuBar1.setForeground(new java.awt.Color(0, 102, 204));
+
         jMenuReturn.setText("Return");
 
         jMenuItemReturn.setText("Return");

@@ -28,23 +28,24 @@ public class CreateArtist extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
 
-        jLabel1.setText("Creo artistas");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setText("CREATION ARTIST PANEL");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(425, 425, 425)
+                .addGap(426, 426, 426)
                 .addComponent(jLabel1)
-                .addContainerGap(698, Short.MAX_VALUE))
+                .addContainerGap(470, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(236, 236, 236)
+                .addGap(128, 128, 128)
                 .addComponent(jLabel1)
-                .addContainerGap(433, Short.MAX_VALUE))
+                .addContainerGap(525, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

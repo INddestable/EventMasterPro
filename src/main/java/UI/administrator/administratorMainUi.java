@@ -36,6 +36,8 @@ public class administratorMainUi extends javax.swing.JFrame {
         jFrame1 = new javax.swing.JFrame();
         windowAdministrator = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuReturn = new javax.swing.JMenu();
+        jMenuItemReturn = new javax.swing.JMenuItem();
         jMenuEvents = new javax.swing.JMenu();
         jMenuItemCreateEvent = new javax.swing.JMenuItem();
         jMenuItemListEvents = new javax.swing.JMenuItem();
@@ -53,8 +55,6 @@ public class administratorMainUi extends javax.swing.JFrame {
         jMenuItemModifyTickets = new javax.swing.JMenuItem();
         jMenuStadistics = new javax.swing.JMenu();
         jMenuItemStadistics = new javax.swing.JMenuItem();
-        jMenuReturn = new javax.swing.JMenu();
-        jMenuItemReturn = new javax.swing.JMenuItem();
 
         jMenu1.setText("jMenu1");
 
@@ -88,6 +88,20 @@ public class administratorMainUi extends javax.swing.JFrame {
             windowAdministratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 685, Short.MAX_VALUE)
         );
+
+        jMenuBar1.setBackground(new java.awt.Color(0, 102, 255));
+
+        jMenuReturn.setText("Return");
+
+        jMenuItemReturn.setText("Return");
+        jMenuItemReturn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemReturnActionPerformed(evt);
+            }
+        });
+        jMenuReturn.add(jMenuItemReturn);
+
+        jMenuBar1.add(jMenuReturn);
 
         jMenuEvents.setText("Events");
 
@@ -205,18 +219,6 @@ public class administratorMainUi extends javax.swing.JFrame {
         jMenuStadistics.add(jMenuItemStadistics);
 
         jMenuBar1.add(jMenuStadistics);
-
-        jMenuReturn.setText("Return");
-
-        jMenuItemReturn.setText("Return");
-        jMenuItemReturn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemReturnActionPerformed(evt);
-            }
-        });
-        jMenuReturn.add(jMenuItemReturn);
-
-        jMenuBar1.add(jMenuReturn);
 
         setJMenuBar(jMenuBar1);
 
