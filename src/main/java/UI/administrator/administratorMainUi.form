@@ -44,6 +44,11 @@
         </DimensionLayout>
       </Layout>
     </Container>
+    <Component class="javax.swing.JMenuItem" name="jMenuItem1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jMenuItem1"/>
+      </Properties>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -131,7 +136,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuArtists">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Artists"/>
+            <Property name="text" type="java.lang.String" value="Artists and Records"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemCreateArtists">
@@ -150,11 +155,27 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemListArtistsActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAddRecord">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Add Record"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemAddRecordActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemListArtistRecords">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="List Artist Records"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemListArtistRecordsActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuTicketsAndSales">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Tickets and sales"/>
+            <Property name="text" type="java.lang.String" value="Tickets and Sales"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemCreateTicketForEvent">

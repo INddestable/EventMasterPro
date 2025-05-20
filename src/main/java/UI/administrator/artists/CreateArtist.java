@@ -4,6 +4,12 @@
  */
 package UI.administrator.artists;
 
+import Connection.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author kevin
@@ -27,30 +33,153 @@ public class CreateArtist extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextFieldArtistName = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jTextFieldTechnicalRequirements = new javax.swing.JTextField();
+        btnCreateArtist = new javax.swing.JButton();
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setText("CREATION ARTIST PANEL");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel2.setText("Artist Name:");
+
+        jTextFieldArtistName.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        jTextFieldArtistName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldArtistNameActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setText("Technical Requirements:");
+
+        jTextFieldTechnicalRequirements.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        jTextFieldTechnicalRequirements.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldTechnicalRequirementsActionPerformed(evt);
+            }
+        });
+
+        btnCreateArtist.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnCreateArtist.setText("CREATE ARTIST");
+        btnCreateArtist.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateArtistActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnCreateArtist, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addComponent(jTextFieldTechnicalRequirements)
+                        .addComponent(jTextFieldArtistName)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jTextFieldArtistName, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addGap(18, 18, 18)
+                .addComponent(jTextFieldTechnicalRequirements, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(58, 58, 58)
+                .addComponent(btnCreateArtist, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(198, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(426, 426, 426)
-                .addComponent(jLabel1)
-                .addContainerGap(470, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 364, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 364, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(128, 128, 128)
+                .addGap(46, 46, 46)
                 .addComponent(jLabel1)
-                .addContainerGap(525, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jTextFieldArtistNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldArtistNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldArtistNameActionPerformed
+
+    private void jTextFieldTechnicalRequirementsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTechnicalRequirementsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTechnicalRequirementsActionPerformed
+
+    private void btnCreateArtistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateArtistActionPerformed
+        String name = jTextFieldArtistName.getText().trim();
+        String technicalRequirements = jTextFieldTechnicalRequirements.getText().trim();
+
+        // Validación básica
+        if (name.isEmpty() || technicalRequirements.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor completa todos los campos.");
+            return;
+        }
+
+
+        String sql = "INSERT INTO artist (nameartist, technicalrequirement) VALUES (?, ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+            stmt.setString(2, technicalRequirements);
+
+            int rowsInserted = stmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                JOptionPane.showMessageDialog(this, "¡Artist created successfully! \n U can now create records for this Artist");
+                jTextFieldArtistName.setText("");
+                jTextFieldTechnicalRequirements.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "The Artist could not be created.");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "An error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnCreateArtistActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCreateArtist;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTextFieldArtistName;
+    private javax.swing.JTextField jTextFieldTechnicalRequirements;
     // End of variables declaration//GEN-END:variables
 }

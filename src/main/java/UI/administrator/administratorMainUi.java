@@ -34,6 +34,7 @@ public class administratorMainUi extends javax.swing.JFrame {
         jMenu5 = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jFrame1 = new javax.swing.JFrame();
+        jMenuItem1 = new javax.swing.JMenuItem();
         windowAdministrator = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuReturn = new javax.swing.JMenu();
@@ -49,6 +50,8 @@ public class administratorMainUi extends javax.swing.JFrame {
         jMenuArtists = new javax.swing.JMenu();
         jMenuItemCreateArtists = new javax.swing.JMenuItem();
         jMenuItemListArtists = new javax.swing.JMenuItem();
+        jMenuItemAddRecord = new javax.swing.JMenuItem();
+        jMenuItemListArtistRecords = new javax.swing.JMenuItem();
         jMenuTicketsAndSales = new javax.swing.JMenu();
         jMenuItemCreateTicketForEvent = new javax.swing.JMenuItem();
         jMenuItemListTickets = new javax.swing.JMenuItem();
@@ -74,6 +77,8 @@ public class administratorMainUi extends javax.swing.JFrame {
             jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
         );
+
+        jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(102, 204, 255));
@@ -160,7 +165,7 @@ public class administratorMainUi extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenuLocations);
 
-        jMenuArtists.setText("Artists");
+        jMenuArtists.setText("Artists and Records");
 
         jMenuItemCreateArtists.setText("Create Artist");
         jMenuItemCreateArtists.addActionListener(new java.awt.event.ActionListener() {
@@ -178,9 +183,25 @@ public class administratorMainUi extends javax.swing.JFrame {
         });
         jMenuArtists.add(jMenuItemListArtists);
 
+        jMenuItemAddRecord.setText("Add Record");
+        jMenuItemAddRecord.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAddRecordActionPerformed(evt);
+            }
+        });
+        jMenuArtists.add(jMenuItemAddRecord);
+
+        jMenuItemListArtistRecords.setText("List Artist Records");
+        jMenuItemListArtistRecords.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemListArtistRecordsActionPerformed(evt);
+            }
+        });
+        jMenuArtists.add(jMenuItemListArtistRecords);
+
         jMenuBar1.add(jMenuArtists);
 
-        jMenuTicketsAndSales.setText("Tickets and sales");
+        jMenuTicketsAndSales.setText("Tickets and Sales");
 
         jMenuItemCreateTicketForEvent.setText("Create Tickets for Event");
         jMenuItemCreateTicketForEvent.addActionListener(new java.awt.event.ActionListener() {
@@ -391,6 +412,30 @@ public class administratorMainUi extends javax.swing.JFrame {
         windowAdministrator.revalidate();
         windowAdministrator.repaint();    }//GEN-LAST:event_jMenuItemStadisticsActionPerformed
 
+    private void jMenuItemAddRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAddRecordActionPerformed
+        UI.administrator.artists.AddRecord ARUI = new UI.administrator.artists.AddRecord();
+        ARUI.setSize(1188, 685);
+        ARUI.setLocation(0, 0);
+        //ARUI = Add Record UI
+        
+        windowAdministrator.removeAll();
+        windowAdministrator.add(ARUI, BorderLayout.CENTER);
+        windowAdministrator.revalidate();
+        windowAdministrator.repaint();
+    }//GEN-LAST:event_jMenuItemAddRecordActionPerformed
+
+    private void jMenuItemListArtistRecordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemListArtistRecordsActionPerformed
+        UI.administrator.artists.ListArtistRecords LARUI = new UI.administrator.artists.ListArtistRecords();
+        LARUI.setSize(1188, 685);
+        LARUI.setLocation(0, 0);
+        //LARUI = List Artist Record UI
+        
+        windowAdministrator.removeAll();
+        windowAdministrator.add(LARUI, BorderLayout.CENTER);
+        windowAdministrator.revalidate();
+        windowAdministrator.repaint();
+    }//GEN-LAST:event_jMenuItemListArtistRecordsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -435,11 +480,14 @@ public class administratorMainUi extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenu jMenuEvents;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItemAddRecord;
     private javax.swing.JMenuItem jMenuItemCreateArtists;
     private javax.swing.JMenuItem jMenuItemCreateEvent;
     private javax.swing.JMenuItem jMenuItemCreateLocation;
     private javax.swing.JMenuItem jMenuItemCreateTicketForEvent;
     private javax.swing.JMenuItem jMenuItemDeleteEvent;
+    private javax.swing.JMenuItem jMenuItemListArtistRecords;
     private javax.swing.JMenuItem jMenuItemListArtists;
     private javax.swing.JMenuItem jMenuItemListEvents;
     private javax.swing.JMenuItem jMenuItemListLocations;
