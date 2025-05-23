@@ -114,7 +114,7 @@ public class ListArtists extends javax.swing.JPanel {
             jTableArtists.setModel(model);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar locaciones: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error loading locations: " + e.getMessage());
             e.printStackTrace();
         }
     }

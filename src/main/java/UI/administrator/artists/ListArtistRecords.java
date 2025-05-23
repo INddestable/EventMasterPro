@@ -156,7 +156,7 @@ public class ListArtistRecords extends javax.swing.JPanel {
             jListArtist.setModel(model);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar artistas: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error loading artists: " + e.getMessage());
             e.printStackTrace();
         }
         
@@ -201,7 +201,7 @@ public class ListArtistRecords extends javax.swing.JPanel {
             jTableRecordsArtist.setModel(model);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar records: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error loading records: " + e.getMessage());
             e.printStackTrace();
         }
     }

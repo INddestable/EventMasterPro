@@ -177,13 +177,13 @@ public class AddRecord extends javax.swing.JPanel {
         String gender = jTextFieldRecordGender.getText().trim();
 
         if (selectedArtistName == null || recordName.isEmpty() || gender.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Completa todos los campos y selecciona un artista.");
+            JOptionPane.showMessageDialog(this, "complete all fields and select an artist.");
             return;
         }
 
         Integer idartist = artistNameToIdMap.get(selectedArtistName);
         if (idartist == null) {
-            JOptionPane.showMessageDialog(this, "No se encontró el artista.");
+            JOptionPane.showMessageDialog(this, "The artist was not found.");
             return;
         }
 
@@ -209,18 +209,18 @@ public class AddRecord extends javax.swing.JPanel {
                         insertARStmt.executeUpdate();
 
                         conn.commit();
-                        JOptionPane.showMessageDialog(this, "¡Record agregado exitosamente UwU!");
+                        JOptionPane.showMessageDialog(this, "Record added successfully!");
                         jTextFieldRecordName.setText("");
                         jTextFieldRecordGender.setText("");
                         jListArtist.clearSelection();
                     }
                 } else {
                     conn.rollback();
-                    JOptionPane.showMessageDialog(this, "No se pudo obtener el ID del record.");
+                    JOptionPane.showMessageDialog(this, "The record ID could not be obtained.");
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al agregar el record: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error adding record: " + e.getMessage());
             e.printStackTrace();
         }
     }//GEN-LAST:event_btnAddRecordActionPerformed
@@ -244,7 +244,7 @@ public class AddRecord extends javax.swing.JPanel {
             jListArtist.setModel(model);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar artistas: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error loading artists: " + e.getMessage());
             e.printStackTrace();
         }
     }

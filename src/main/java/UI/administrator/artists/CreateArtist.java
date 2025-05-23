@@ -143,7 +143,7 @@ public class CreateArtist extends javax.swing.JPanel {
 
         // Validación básica
         if (name.isEmpty() || technicalRequirements.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor completa todos los campos.");
+            JOptionPane.showMessageDialog(this, "Please complete all fields.");
             return;
         }
 
