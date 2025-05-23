@@ -4,17 +4,30 @@
  */
 package UI.administrator.artists;
 
+import Connection.DBConnection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author kevin
  */
 public class ListArtistRecords extends javax.swing.JPanel {
+    private Map<String, Integer> artistNameToIdMap = new HashMap<>();
 
     /**
      * Creates new form ListArtistRecords
      */
     public ListArtistRecords() {
         initComponents();
+        cargarArtistas();
+        configurarEventoSeleccionArtista();
     }
 
     /**
@@ -27,29 +40,180 @@ public class ListArtistRecords extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPaneArtistSelector = new javax.swing.JScrollPane();
+        jListArtist = new javax.swing.JList<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableRecordsArtist = new javax.swing.JTable();
 
-        jLabel1.setText("Lista insana WAAAAAZAAAAAAAAAAA");
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel1.setText("ARTIST RECORDS LIST");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel2.setText("Artists List:");
+
+        jListArtist.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jListArtist.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jListArtist.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPaneArtistSelector.setViewportView(jListArtist);
+
+        jTableRecordsArtist.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Record Name", "Gender"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTableRecordsArtist);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPaneArtistSelector, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(45, 45, 45)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 718, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(39, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPaneArtistSelector, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(31, 31, 31))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(499, 499, 499)
-                .addComponent(jLabel1)
-                .addContainerGap(479, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(106, 106, 106)
+                .addGap(40, 40, 40)
                 .addComponent(jLabel1)
-                .addContainerGap(563, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private void cargarArtistas() {
+        DefaultListModel<String> model = new DefaultListModel<>();
+        artistNameToIdMap.clear(); // limpiar por si ya hay datos
 
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT idartist, nameartist FROM Artist")) {
+
+            while (rs.next()) {
+                int id = rs.getInt("idartist");
+                String name = rs.getString("nameartist");
+
+                model.addElement(name);
+                artistNameToIdMap.put(name, id); // guardar relación nombre → id
+            }
+
+            jListArtist.setModel(model);
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar artistas: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+    }
+
+    private void configurarEventoSeleccionArtista() {
+     jListArtist.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+         @Override
+         public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+             if (!evt.getValueIsAdjusting()) {
+                 String selectedArtist = jListArtist.getSelectedValue();
+                 if (selectedArtist != null && artistNameToIdMap.containsKey(selectedArtist)) {
+                     int idartist = artistNameToIdMap.get(selectedArtist);
+                     cargarRecordsDeArtista(idartist);
+                 }
+             }
+         }
+     });
+ }
+    
+    private void cargarRecordsDeArtista(int idartist) {
+        String sql = "SELECT r.namerecord, r.gender " +
+                     "FROM record r " +
+                     "JOIN artistrecord ar ON r.idrecord = ar.idrecord " +
+                     "WHERE ar.idartist = " + idartist;
+
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            // Crear modelo de tabla
+            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
+            model.addColumn("Record Name");
+            model.addColumn("Gender");
+
+            while (rs.next()) {
+                String name = rs.getString("namerecord");
+                String gender = rs.getString("gender");
+                model.addRow(new Object[]{name, gender});
+            }
+
+            jTableRecordsArtist.setModel(model);
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar records: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JList<String> jListArtist;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneArtistSelector;
+    private javax.swing.JTable jTableRecordsArtist;
     // End of variables declaration//GEN-END:variables
 }

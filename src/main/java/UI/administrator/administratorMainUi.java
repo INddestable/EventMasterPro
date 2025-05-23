@@ -5,6 +5,10 @@
 package UI.administrator;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.net.URL;
+import javax.swing.JFrame;
 
 /**
  *
@@ -18,6 +22,19 @@ public class administratorMainUi extends javax.swing.JFrame {
     public administratorMainUi() {
         initComponents();
         this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
+        setIconImage(getIconImage());
+    }
+
+    @Override
+    public Image getIconImage () {
+        String img = "/logo.png";
+        URL url = getClass().getResource(img);
+        if (url == null) {
+            System.err.println("No se encontró el recurso: " + img);
+            return null;
+        }
+        System.out.println("URL del recurso: " + url);
+        return Toolkit.getDefaultToolkit().getImage(url); 
     }
 
     /**
@@ -436,6 +453,13 @@ public class administratorMainUi extends javax.swing.JFrame {
         windowAdministrator.repaint();
     }//GEN-LAST:event_jMenuItemListArtistRecordsActionPerformed
 
+    /*
+    public static void setIcon(JFrame frame){
+        Image ico = Toolkit.getDefaultToolkit().getImage(ImageUtil.class.getResource("logo.png"));
+        frame.setIconImage(ico);
+    }
+    */
+    
     /**
      * @param args the command line arguments
      */

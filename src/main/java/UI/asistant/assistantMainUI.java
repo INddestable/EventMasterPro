@@ -5,6 +5,9 @@
 package UI.asistant;
 import UI.eventMasterPro;
 import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.net.URL;
 
 
 /**
@@ -19,8 +22,20 @@ public class assistantMainUI extends javax.swing.JFrame {
     public assistantMainUI() {
         initComponents();
         this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
+        setIconImage(getIconImage());
     }
 
+    @Override
+    public Image getIconImage () {
+        String img = "/logo.png";
+        URL url = getClass().getResource(img);
+        if (url == null) {
+            System.err.println("No se encontró el recurso: " + img);
+            return null;
+        }
+        System.out.println("URL del recurso: " + url);
+        return Toolkit.getDefaultToolkit().getImage(url); 
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

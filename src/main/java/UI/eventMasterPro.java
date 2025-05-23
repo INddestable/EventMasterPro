@@ -6,6 +6,9 @@ package UI;
 
 import UI.administrator.administratorMainUi;
 import UI.asistant.assistantMainUI;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.net.URL;
 
 /**
  *
@@ -18,8 +21,21 @@ public class eventMasterPro extends javax.swing.JFrame {
     public eventMasterPro() {
         initComponents();
         dispose();
+        setIconImage(getIconImage());
     }
 
+    @Override
+    public Image getIconImage () {
+        String img = "/logo.png";
+        URL url = getClass().getResource(img);
+        if (url == null) {
+            System.err.println("No se encontró el recurso: " + img);
+            return null;
+        }
+        System.out.println("URL del recurso: " + url);
+        return Toolkit.getDefaultToolkit().getImage(url); 
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,12 +45,18 @@ public class eventMasterPro extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel2 = new javax.swing.JLabel();
         paneAssistant = new javax.swing.JPanel();
         btnAssistant = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
         paneAdministrator = new javax.swing.JPanel();
         btnAdministator = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+
+        jLabel2.setText("jLabel2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -48,15 +70,23 @@ public class eventMasterPro extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assistant.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout paneAssistantLayout = new javax.swing.GroupLayout(paneAssistant);
@@ -77,7 +107,7 @@ public class eventMasterPro extends javax.swing.JFrame {
             paneAssistantLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneAssistantLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAssistant)
                 .addGap(40, 40, 40))
@@ -93,15 +123,30 @@ public class eventMasterPro extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setPreferredSize(new java.awt.Dimension(0, 232));
+
+        jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\kevin\\OneDrive\\Documents\\NetBeansProjects\\EventMasterPro\\src\\main\\resources\\Administrator.png")); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(97, 97, 97))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 220, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout paneAdministratorLayout = new javax.swing.GroupLayout(paneAdministrator);
@@ -115,14 +160,14 @@ public class eventMasterPro extends javax.swing.JFrame {
                         .addGap(0, 80, Short.MAX_VALUE)
                         .addComponent(btnAdministator, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 68, Short.MAX_VALUE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
                 .addContainerGap())
         );
         paneAdministratorLayout.setVerticalGroup(
             paneAdministratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneAdministratorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(btnAdministator)
                 .addGap(40, 40, 40))
@@ -133,20 +178,20 @@ public class eventMasterPro extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(125, 125, 125)
+                .addContainerGap(125, Short.MAX_VALUE)
                 .addComponent(paneAssistant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 334, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 338, Short.MAX_VALUE)
                 .addComponent(paneAdministrator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(125, 125, 125))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(214, Short.MAX_VALUE)
+                .addContainerGap(144, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(paneAdministrator, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                     .addComponent(paneAssistant, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
-                .addContainerGap(209, Short.MAX_VALUE))
+                .addContainerGap(230, Short.MAX_VALUE))
         );
 
         pack();
@@ -164,6 +209,8 @@ public class eventMasterPro extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_btnAssistantActionPerformed
 
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -202,6 +249,10 @@ public class eventMasterPro extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdministator;
     private javax.swing.JButton btnAssistant;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel paneAdministrator;

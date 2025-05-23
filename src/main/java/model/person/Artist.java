@@ -5,6 +5,8 @@
 package model.person;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @author kevin
@@ -47,4 +49,13 @@ public class Artist extends Person {
     public void showProfile() {
         System.out.println("Artist: " + name + " (" + contact + ")");
     }  
+
+    public int getIdartist() {
+        return this.getId();
+    }
+    
+    @Override
+    public String toString() {
+        return this.getName(); // ← Así el JList mostrará el nombre del artista
+    }   
 }
