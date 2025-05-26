@@ -4,17 +4,31 @@
  */
 package UI.asistant;
 
+import Connection.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author kevin
  */
 public class BuyTicket extends javax.swing.JPanel {
+    Map<String, Integer> eventNameToIdMap = new HashMap<>();
 
     /**
      * Creates new form BuyTicket
      */
     public BuyTicket() {
         initComponents();
+        jTextFieldTotal.setEditable(false);
+        loadEvents();
     }
 
     /**
@@ -27,29 +41,316 @@ public class BuyTicket extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListEventSelector = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableTicketInfo = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jListTicketBuy = new javax.swing.JList<>();
+        jLabel6 = new javax.swing.JLabel();
+        jTextFieldTotal = new javax.swing.JTextField();
+        btnBuyTicket = new javax.swing.JButton();
 
-        jLabel1.setText("Compro ticket we");
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("BUY TICKETS");
+
+        jListEventSelector.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jListEventSelector.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jListEventSelector.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListEventSelectorValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jListEventSelector);
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setText("Select event:");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel4.setText("ticket information:");
+
+        jTableTicketInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"please select a event", null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Type", "Price", "Quantity available"
+            }
+        ));
+        jScrollPane2.setViewportView(jTableTicketInfo);
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel5.setText("selection of ticket to purchase:");
+
+        jListTicketBuy.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jListTicketBuy.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "please select a event" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jListTicketBuy.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListTicketBuyValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(jListTicketBuy);
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 28)); // NOI18N
+        jLabel6.setText("Total:");
+
+        btnBuyTicket.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        btnBuyTicket.setText("BUY TICKET");
+        btnBuyTicket.setToolTipText("");
+        btnBuyTicket.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuyTicketActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(41, 41, 41)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 856, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(49, 49, 49)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextFieldTotal))
+                            .addComponent(btnBuyTicket, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(23, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane3))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(48, 48, 48)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jTextFieldTotal)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnBuyTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12))))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addGap(32, 32, 32))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(417, 417, 417)
-                .addComponent(jLabel1)
-                .addContainerGap(677, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(297, 297, 297)
+                .addGap(32, 32, 32)
                 .addComponent(jLabel1)
-                .addContainerGap(372, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBuyTicketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuyTicketActionPerformed
+    String selectedEvent = jListEventSelector.getSelectedValue();
+    String selectedType = jListTicketBuy.getSelectedValue();
+    String totalStr = jTextFieldTotal.getText();
 
+    if (selectedEvent == null || selectedType == null || totalStr.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Select event and ticket type.");
+        return;
+    }
+
+    int idevent = Integer.parseInt(selectedEvent.split(" - ")[0].trim());
+
+    try (Connection conn = DBConnection.getConnection()) {
+        String sql = """
+            UPDATE ticket
+            SET selled = 1
+            WHERE idticket = (
+                SELECT idticket FROM (
+                    SELECT idticket
+                    FROM ticket
+                    WHERE idevent = ? AND ticket_type = ? AND selled = 0
+                    LIMIT 1
+                ) AS temp
+            )
+        """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idevent);
+            stmt.setString(2, selectedType);
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) {
+                // WARNING, if u want make a login system un need change the "1"       (O)<--there on the next line :p 
+                String historySql = "INSERT INTO history (idassistant, idevent) VALUES (1, ?)";
+                try (PreparedStatement histStmt = conn.prepareStatement(historySql)) {
+                    histStmt.setInt(1, idevent);
+                    histStmt.executeUpdate();
+                }
+
+                JOptionPane.showMessageDialog(null, "Ticket purchased successfully!");
+                loadAvailableTickets(idevent);
+            } else {
+                JOptionPane.showMessageDialog(null, "No tickets available.");
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error buying ticket.");
+    }
+    }//GEN-LAST:event_btnBuyTicketActionPerformed
+
+    private void jListTicketBuyValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListTicketBuyValueChanged
+        if (!evt.getValueIsAdjusting()) {
+            String selectedType = jListTicketBuy.getSelectedValue();
+            if (selectedType == null) return;
+
+            DefaultTableModel model = (DefaultTableModel) jTableTicketInfo.getModel();
+            for (int i = 0; i < model.getRowCount(); i++) {
+                if (model.getValueAt(i, 0).equals(selectedType)) {
+                    jTextFieldTotal.setText(String.valueOf(model.getValueAt(i, 1)));
+                    break;
+                }
+            }
+        }
+    }//GEN-LAST:event_jListTicketBuyValueChanged
+
+    private void jListEventSelectorValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListEventSelectorValueChanged
+        if (!evt.getValueIsAdjusting()) {
+            String selectedValue = jListEventSelector.getSelectedValue();
+            if (selectedValue == null) return;
+
+            int eventId = Integer.parseInt(selectedValue.split(" - ")[0].trim());
+            loadAvailableTickets(eventId);
+        }
+    }//GEN-LAST:event_jListEventSelectorValueChanged
+
+    private void loadAvailableTickets(int eventId) {
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Type", "Price", "Available"}, 0);
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+
+        try (Connection conn = DBConnection.getConnection();) {
+            String sql = """
+                SELECT ticket_type, price, COUNT(*) AS available
+                FROM ticket
+                WHERE idevent = ? AND selled = 0
+                GROUP BY ticket_type, price
+            """;
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, eventId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        String type = rs.getString("ticket_type");
+                        double price = rs.getDouble("price");
+                        int available = rs.getInt("available");
+
+                        model.addRow(new Object[]{type, price, available});
+                        listModel.addElement(type);
+                    }
+                }
+            }
+
+            jTableTicketInfo.setModel(model);
+            jListTicketBuy.setModel(listModel);
+            jTextFieldTotal.setText("");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error loading tickets.");
+        }
+    }
+
+        private void loadEvents() {
+        DefaultListModel<String> model = new DefaultListModel<>();
+
+        try {
+            Connection conn = DBConnection.getConnection();
+            String query = "SELECT idevent, nameevent FROM event";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            int id = rs.getInt("idevent");
+            String name = rs.getString("nameevent");
+            String displayText = id + " - " + name;
+
+            model.addElement(displayText);
+            eventNameToIdMap.put(displayText, id);
+        }
+
+            jListEventSelector.setModel(model);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading locations");
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuyTicket;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JList<String> jListEventSelector;
+    private javax.swing.JList<String> jListTicketBuy;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTableTicketInfo;
+    private javax.swing.JTextField jTextFieldTotal;
     // End of variables declaration//GEN-END:variables
 }

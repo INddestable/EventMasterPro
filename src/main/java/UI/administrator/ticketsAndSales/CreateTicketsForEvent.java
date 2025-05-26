@@ -4,17 +4,29 @@
  */
 package UI.administrator.ticketsAndSales;
 
+import Connection.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author kevin
  */
 public class CreateTicketsForEvent extends javax.swing.JPanel {
-
+    Map<String, Integer> eventNameToIdMap = new HashMap<>();
     /**
      * Creates new form CreateTicketsForEvent
      */
     public CreateTicketsForEvent() {
         initComponents();
+        loadEvents();
     }
 
     /**
@@ -27,29 +39,251 @@ public class CreateTicketsForEvent extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListEventSelector = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableTickets = new javax.swing.JTable();
+        btnAddRow = new javax.swing.JButton();
+        btnCreateTickets = new javax.swing.JButton();
 
-        jLabel1.setText("Creo tickets para eventos");
+        setBackground(new java.awt.Color(255, 255, 255));
+        setForeground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel1.setText("CREATE TICKETS FOR EVENT");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel2.setText("Tickets:");
+
+        jListEventSelector.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jListEventSelector.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jListEventSelector);
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setText("Select event:");
+
+        jTableTickets.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null}
+            },
+            new String [] {
+                "Ticket name", "Number of tickets", "Ticket Prices"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jTableTickets.setToolTipText("Example: Normal | 200 | 50");
+        jScrollPane2.setViewportView(jTableTickets);
+
+        btnAddRow.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAddRow.setText("ADD NEW TICKET TYPE");
+        btnAddRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddRowActionPerformed(evt);
+            }
+        });
+
+        btnCreateTickets.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnCreateTickets.setText("CREATE TICKETS");
+        btnCreateTickets.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateTicketsActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnAddRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCreateTickets, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE))))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(btnAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCreateTickets, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(23, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(392, 392, 392)
-                .addComponent(jLabel1)
-                .addContainerGap(664, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(228, 228, 228)
+                .addGap(50, 50, 50)
                 .addComponent(jLabel1)
-                .addContainerGap(441, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddRowActionPerformed
+        DefaultTableModel model = (DefaultTableModel) jTableTickets.getModel();
+        model.addRow(new Object[]{"", null, null});
+    }//GEN-LAST:event_btnAddRowActionPerformed
 
+    private void loadEvents() {
+        DefaultListModel<String> model = new DefaultListModel<>();
+
+        try {
+            Connection conn = DBConnection.getConnection();
+            String query = "SELECT idevent, nameevent FROM event";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            int id = rs.getInt("idevent");
+            String name = rs.getString("nameevent");
+            String displayText = id + " - " + name;
+
+            model.addElement(displayText);
+            eventNameToIdMap.put(displayText, id);
+        }
+
+            jListEventSelector.setModel(model);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading locations");
+        }
+    }
+    
+    private void btnCreateTicketsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateTicketsActionPerformed
+
+        try {
+            Connection conn = DBConnection.getConnection();
+
+            String selectedEventName = jListEventSelector.getSelectedValue();
+            if (selectedEventName == null) {
+                JOptionPane.showMessageDialog(this, "You must select an event.");
+                return;
+            }
+
+            Integer selectedEventId = eventNameToIdMap.get(selectedEventName);
+            if (selectedEventId == null) {
+                JOptionPane.showMessageDialog(this, "The selected event ID was not found.");
+                return;
+            }
+
+            DefaultTableModel model = (DefaultTableModel) jTableTickets.getModel();
+            int rowCount = model.getRowCount();
+
+            if (rowCount == 0) {
+                JOptionPane.showMessageDialog(this, "You must add at least one ticket type.");
+                return;
+            }
+
+            String insertTicketSQL = "INSERT INTO ticket (idevent, ticket_type, price, selled, idassistant) VALUES (?, ?, ?, 0, NULL)";
+            PreparedStatement stmt = conn.prepareStatement(insertTicketSQL);
+
+            for (int i = 0; i < rowCount; i++) {
+                String ticketType = model.getValueAt(i, 0).toString().trim();
+                String quantityStr = model.getValueAt(i, 1).toString().trim();
+                String priceStr = model.getValueAt(i, 2).toString().trim();
+
+                if (ticketType.isEmpty() || quantityStr.isEmpty() || priceStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "You cannot leave empty fields in the row " + (i + 1));
+                    return;
+                }
+
+                int quantity;
+                double price;
+
+                try {
+                    quantity = Integer.parseInt(quantityStr);
+                    price = Double.parseDouble(priceStr);
+                    if (quantity <= 0 || price < 0) throw new NumberFormatException();
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Verify that the quantity is a positive integer and the price is a valid number in the row " + (i + 1));
+                    return;
+                }
+
+                for (int j = 0; j < quantity; j++) {
+                    stmt.setInt(1, selectedEventId);
+                    stmt.setString(2, ticketType);
+                    stmt.setDouble(3, price);
+                    stmt.addBatch();
+                }
+            }
+
+            stmt.executeBatch();
+            JOptionPane.showMessageDialog(this, "Tickets created successfully.");
+
+            // Limpieza opcional:
+            ((DefaultTableModel) jTableTickets.getModel()).setRowCount(0);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error inserting tickets into the database.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An unexpected error occurred.");
+        }
+    }//GEN-LAST:event_btnCreateTicketsActionPerformed
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddRow;
+    private javax.swing.JButton btnCreateTickets;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JList<String> jListEventSelector;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTableTickets;
     // End of variables declaration//GEN-END:variables
 }

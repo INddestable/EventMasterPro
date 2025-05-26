@@ -4,17 +4,31 @@
  */
 package UI.administrator.ticketsAndSales;
 
+import Connection.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author kevin
  */
 public class ListTickets extends javax.swing.JPanel {
+    Map<String, Integer> eventNameToIdMap = new HashMap<>();
 
     /**
      * Creates new form ListTickets
      */
     public ListTickets() {
         initComponents();
+        loadEvents();
+        
     }
 
     /**
@@ -27,29 +41,184 @@ public class ListTickets extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableTickets = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListEventSelector = new javax.swing.JList<>();
 
-        jLabel1.setText("Listo los tickets que hay");
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel1.setText("TICKETS LIST");
+
+        jTableTickets.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Ticket name", "Number of tickets", "Ticket Prices"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jTableTickets.setToolTipText("Example: Normal | 200 | 50");
+        jScrollPane2.setViewportView(jTableTickets);
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel2.setText("Tickets:");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setText("Select event:");
+
+        jListEventSelector.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jListEventSelector.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jListEventSelector.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListEventSelectorValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jListEventSelector);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 847, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(39, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(401, 401, 401)
-                .addComponent(jLabel1)
-                .addContainerGap(662, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 395, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 564, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(252, 252, 252)
+                .addGap(30, 30, 30)
                 .addComponent(jLabel1)
-                .addContainerGap(417, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jListEventSelectorValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListEventSelectorValueChanged
+        showTicketsForSelectedEvent();
+    }//GEN-LAST:event_jListEventSelectorValueChanged
 
+    private void loadEvents() {
+        DefaultListModel<String> model = new DefaultListModel<>();
+
+        try {
+            Connection conn = DBConnection.getConnection();
+            String query = "SELECT idevent, nameevent FROM event";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            int id = rs.getInt("idevent");
+            String name = rs.getString("nameevent");
+            String displayText = id + " - " + name;
+
+            model.addElement(displayText);
+            eventNameToIdMap.put(displayText, id);
+        }
+
+            jListEventSelector.setModel(model);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading locations");
+        }
+    }
+
+    private void showTicketsForSelectedEvent() {
+        try {
+            String selectedEventName = jListEventSelector.getSelectedValue();
+            if (selectedEventName == null) {
+                JOptionPane.showMessageDialog(this, "You must select an event.");
+                return;
+            }
+
+            Integer selectedEventId = eventNameToIdMap.get(selectedEventName);
+            if (selectedEventId == null) {
+                JOptionPane.showMessageDialog(this, "The selected event ID was not found.");
+                return;
+            }
+
+            Connection conn = DBConnection.getConnection();
+            String query = "SELECT ticket_type, COUNT(*) AS cantidad, price FROM ticket WHERE idevent = ? GROUP BY ticket_type, price";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, selectedEventId);
+            ResultSet rs = stmt.executeQuery();
+
+            DefaultTableModel model = (DefaultTableModel) jTableTickets.getModel();
+            model.setRowCount(0); // limpiar tabla
+
+            while (rs.next()) {
+                String type = rs.getString("ticket_type");
+                int cantidad = rs.getInt("cantidad");
+                double price = rs.getDouble("price");
+                model.addRow(new Object[]{type, cantidad, price});
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading tickets.");
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JList<String> jListEventSelector;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTableTickets;
     // End of variables declaration//GEN-END:variables
 }

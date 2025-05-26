@@ -57,11 +57,6 @@
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="b5" green="b5" red="b5" type="rgb"/>
-        </Property>
-      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -70,12 +65,10 @@
                   <EmptySpace pref="443" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="jFormattedTextFieldLocationCapacity" pref="289" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextFieldLocationName" max="32767" attributes="0"/>
-                          <Component id="btnCreateLocation" alignment="0" pref="289" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldLocationName" max="32767" attributes="0"/>
+                      <Component id="btnCreateLocation" alignment="0" pref="289" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace pref="444" max="32767" attributes="0"/>
               </Group>

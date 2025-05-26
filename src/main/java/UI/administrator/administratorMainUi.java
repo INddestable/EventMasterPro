@@ -59,7 +59,6 @@ public class administratorMainUi extends javax.swing.JFrame {
         jMenuEvents = new javax.swing.JMenu();
         jMenuItemCreateEvent = new javax.swing.JMenuItem();
         jMenuItemListEvents = new javax.swing.JMenuItem();
-        jMenuItemModifyEvent = new javax.swing.JMenuItem();
         jMenuItemDeleteEvent = new javax.swing.JMenuItem();
         jMenuLocations = new javax.swing.JMenu();
         jMenuItemCreateLocation = new javax.swing.JMenuItem();
@@ -72,9 +71,6 @@ public class administratorMainUi extends javax.swing.JFrame {
         jMenuTicketsAndSales = new javax.swing.JMenu();
         jMenuItemCreateTicketForEvent = new javax.swing.JMenuItem();
         jMenuItemListTickets = new javax.swing.JMenuItem();
-        jMenuItemModifyTickets = new javax.swing.JMenuItem();
-        jMenuStadistics = new javax.swing.JMenu();
-        jMenuItemStadistics = new javax.swing.JMenuItem();
 
         jMenu1.setText("jMenu1");
 
@@ -142,14 +138,6 @@ public class administratorMainUi extends javax.swing.JFrame {
             }
         });
         jMenuEvents.add(jMenuItemListEvents);
-
-        jMenuItemModifyEvent.setText("Modify Events");
-        jMenuItemModifyEvent.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemModifyEventActionPerformed(evt);
-            }
-        });
-        jMenuEvents.add(jMenuItemModifyEvent);
 
         jMenuItemDeleteEvent.setText("Delete event");
         jMenuItemDeleteEvent.addActionListener(new java.awt.event.ActionListener() {
@@ -236,27 +224,7 @@ public class administratorMainUi extends javax.swing.JFrame {
         });
         jMenuTicketsAndSales.add(jMenuItemListTickets);
 
-        jMenuItemModifyTickets.setText("Modify Tickets");
-        jMenuItemModifyTickets.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemModifyTicketsActionPerformed(evt);
-            }
-        });
-        jMenuTicketsAndSales.add(jMenuItemModifyTickets);
-
         jMenuBar1.add(jMenuTicketsAndSales);
-
-        jMenuStadistics.setText("Stadistics");
-
-        jMenuItemStadistics.setText("Stadistics");
-        jMenuItemStadistics.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemStadisticsActionPerformed(evt);
-            }
-        });
-        jMenuStadistics.add(jMenuItemStadistics);
-
-        jMenuBar1.add(jMenuStadistics);
 
         setJMenuBar(jMenuBar1);
 
@@ -334,18 +302,6 @@ public class administratorMainUi extends javax.swing.JFrame {
         windowAdministrator.repaint();
     }//GEN-LAST:event_jMenuItemListEventsActionPerformed
 
-    private void jMenuItemModifyEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemModifyEventActionPerformed
-        UI.administrator.events.ModifyEvent MEUI = new UI.administrator.events.ModifyEvent();
-        MEUI.setSize(1188, 685);
-        MEUI.setLocation(0, 0);
-        //MEUI = Modify Event UI
-        
-        windowAdministrator.removeAll();
-        windowAdministrator.add(MEUI, BorderLayout.CENTER);
-        windowAdministrator.revalidate();
-        windowAdministrator.repaint();
-    }//GEN-LAST:event_jMenuItemModifyEventActionPerformed
-
     private void jMenuItemDeleteEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemDeleteEventActionPerformed
         UI.administrator.events.DeleteEvent DEUI = new UI.administrator.events.DeleteEvent();
         DEUI.setSize(1188, 685);
@@ -405,29 +361,6 @@ public class administratorMainUi extends javax.swing.JFrame {
         windowAdministrator.revalidate();
         windowAdministrator.repaint();
     }//GEN-LAST:event_jMenuItemListArtistsActionPerformed
-
-    private void jMenuItemModifyTicketsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemModifyTicketsActionPerformed
-        UI.administrator.ticketsAndSales.ModifyTicket MTUI = new UI.administrator.ticketsAndSales.ModifyTicket();
-        MTUI.setSize(1188, 685);
-        MTUI.setLocation(0, 0);
-        //MTUI = Modify Ticket UI
-        
-        windowAdministrator.removeAll();
-        windowAdministrator.add(MTUI, BorderLayout.CENTER);
-        windowAdministrator.revalidate();
-        windowAdministrator.repaint();
-    }//GEN-LAST:event_jMenuItemModifyTicketsActionPerformed
-
-    private void jMenuItemStadisticsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemStadisticsActionPerformed
-        UI.administrator.Stadistics.Stadistics SUI = new UI.administrator.Stadistics.Stadistics();
-        SUI.setSize(1188, 685);
-        SUI.setLocation(0, 0);
-        //SUI = Stadistics UI
-        
-        windowAdministrator.removeAll();
-        windowAdministrator.add(SUI, BorderLayout.CENTER);
-        windowAdministrator.revalidate();
-        windowAdministrator.repaint();    }//GEN-LAST:event_jMenuItemStadisticsActionPerformed
 
     private void jMenuItemAddRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAddRecordActionPerformed
         UI.administrator.artists.AddRecord ARUI = new UI.administrator.artists.AddRecord();
@@ -516,13 +449,9 @@ public class administratorMainUi extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemListEvents;
     private javax.swing.JMenuItem jMenuItemListLocations;
     private javax.swing.JMenuItem jMenuItemListTickets;
-    private javax.swing.JMenuItem jMenuItemModifyEvent;
-    private javax.swing.JMenuItem jMenuItemModifyTickets;
     private javax.swing.JMenuItem jMenuItemReturn;
-    private javax.swing.JMenuItem jMenuItemStadistics;
     private javax.swing.JMenu jMenuLocations;
     private javax.swing.JMenu jMenuReturn;
-    private javax.swing.JMenu jMenuStadistics;
     private javax.swing.JMenu jMenuTicketsAndSales;
     private javax.swing.JPanel windowAdministrator;
     // End of variables declaration//GEN-END:variables

@@ -39,6 +39,8 @@ public class ListArtists extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableArtists = new javax.swing.JTable();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel2.setText("LIST ARTISTS");
 
