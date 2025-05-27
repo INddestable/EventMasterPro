@@ -411,7 +411,7 @@ public class CreateEvent extends javax.swing.JPanel {
                 // 1. Obtener nombre y fecha
                 String eventName = jTextFieldEventName.getText().trim();
                 if (eventName.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Debes colocar un nombre.");
+                    JOptionPane.showMessageDialog(this, "You must enter a name.");
                     return;
                 }
                 
@@ -424,14 +424,14 @@ public class CreateEvent extends javax.swing.JPanel {
                 // 2. Obtener tipo de evento
                 String eventType = jListEventType.getSelectedValue();
                 if (eventType == null) {
-                    JOptionPane.showMessageDialog(this, "Debes seleccionar un tipo de evento.");
+                    JOptionPane.showMessageDialog(this, "You must select an event type.");
                     return;
                 }
 
                 // 3. Obtener locación
                 String selectedLocation = jListLocations.getSelectedValue();
                 if (selectedLocation == null) {
-                    JOptionPane.showMessageDialog(this, "Debes seleccionar una locación.");
+                    JOptionPane.showMessageDialog(this, "You must select a location.");
                     return;
                 }
                 int idLocation = locationNameToIdMap.get(selectedLocation);
@@ -452,14 +452,14 @@ public class CreateEvent extends javax.swing.JPanel {
                 }
 
                 if (generatedEventId == -1) {
-                    JOptionPane.showMessageDialog(this, "No se pudo obtener el ID del evento.");
+                    JOptionPane.showMessageDialog(this, "Could not get event ID.");
                     return;
                 }
 
                 // 5. Insertar artista(s)
                 List<String> selectedArtists = jListArtist.getSelectedValuesList();
                 if (selectedArtists.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Debes seleccionar al un artista.");
+                    JOptionPane.showMessageDialog(this, "You must select an artist.");
                     return;
                 }
 
@@ -474,14 +474,14 @@ public class CreateEvent extends javax.swing.JPanel {
                 }
                 insertEventArtistStmt.executeBatch();
 
-                JOptionPane.showMessageDialog(this, "Evento creado exitosamente.");
+                JOptionPane.showMessageDialog(this, "Event created successfully.");
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Fecha inválida. Asegúrate de ingresar solo números válidos.");
+                JOptionPane.showMessageDialog(this, "Invalid date. Make sure you enter only valid numbers..");
             } catch (SQLException e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al insertar el evento en la base de datos.");
+                JOptionPane.showMessageDialog(this, "Error inserting event into database.");
             } catch (DateTimeException e) {
-                JOptionPane.showMessageDialog(this, "La fecha ingresada no es válida.");
+                JOptionPane.showMessageDialog(this, "The date entered is not valid.");
             }
     }//GEN-LAST:event_btnCreateEventActionPerformed
 

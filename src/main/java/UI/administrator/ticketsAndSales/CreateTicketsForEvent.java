@@ -76,15 +76,7 @@ public class CreateTicketsForEvent extends javax.swing.JPanel {
             new String [] {
                 "Ticket name", "Number of tickets", "Ticket Prices"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        ));
         jTableTickets.setToolTipText("Example: Normal | 200 | 50");
         jScrollPane2.setViewportView(jTableTickets);
 
@@ -201,12 +193,12 @@ public class CreateTicketsForEvent extends javax.swing.JPanel {
     }
     
     private void btnCreateTicketsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateTicketsActionPerformed
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
-            Connection conn = DBConnection.getConnection();
-
             String selectedEventName = jListEventSelector.getSelectedValue();
-            if (selectedEventName == null) {
+            if (selectedEventName == null || selectedEventName.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "You must select an event.");
                 return;
             }
@@ -219,34 +211,48 @@ public class CreateTicketsForEvent extends javax.swing.JPanel {
 
             DefaultTableModel model = (DefaultTableModel) jTableTickets.getModel();
             int rowCount = model.getRowCount();
-
             if (rowCount == 0) {
                 JOptionPane.showMessageDialog(this, "You must add at least one ticket type.");
                 return;
             }
 
-            String insertTicketSQL = "INSERT INTO ticket (idevent, ticket_type, price, selled, idassistant) VALUES (?, ?, ?, 0, NULL)";
-            PreparedStatement stmt = conn.prepareStatement(insertTicketSQL);
+            // Conexión
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false); // asi evitamos inserciones parciales pq esplota todo y puuuum
+
+            String sql = "INSERT INTO ticket (idevent, ticket_type, price, selled, idassistant) VALUES (?, ?, ?, 0, NULL)";
+            stmt = conn.prepareStatement(sql);
 
             for (int i = 0; i < rowCount; i++) {
-                String ticketType = model.getValueAt(i, 0).toString().trim();
-                String quantityStr = model.getValueAt(i, 1).toString().trim();
-                String priceStr = model.getValueAt(i, 2).toString().trim();
+                Object typeObj = model.getValueAt(i, 0);
+                Object quantityObj = model.getValueAt(i, 1);
+                Object priceObj = model.getValueAt(i, 2);
+
+                if (typeObj == null || quantityObj == null || priceObj == null) {
+                    JOptionPane.showMessageDialog(this, "You cannot leave empty fields in row " + (i + 1));
+                    conn.rollback();
+                    return;
+                }
+
+                String ticketType = typeObj.toString().trim();
+                String quantityStr = quantityObj.toString().trim();
+                String priceStr = priceObj.toString().trim();
 
                 if (ticketType.isEmpty() || quantityStr.isEmpty() || priceStr.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "You cannot leave empty fields in the row " + (i + 1));
+                    JOptionPane.showMessageDialog(this, "All fields must be filled in row " + (i + 1));
+                    conn.rollback();
                     return;
                 }
 
                 int quantity;
                 double price;
-
                 try {
                     quantity = Integer.parseInt(quantityStr);
                     price = Double.parseDouble(priceStr);
                     if (quantity <= 0 || price < 0) throw new NumberFormatException();
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Verify that the quantity is a positive integer and the price is a valid number in the row " + (i + 1));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Invalid data in row " + (i + 1) + ". Quantity must be a positive integer and price a valid number.");
+                    conn.rollback();
                     return;
                 }
 
@@ -258,18 +264,35 @@ public class CreateTicketsForEvent extends javax.swing.JPanel {
                 }
             }
 
-            stmt.executeBatch();
-            JOptionPane.showMessageDialog(this, "Tickets created successfully.");
+            int[] result = stmt.executeBatch();
+            conn.commit();
+            JOptionPane.showMessageDialog(this, result.length + " tickets created successfully.");
+            model.setRowCount(0);
 
-            // Limpieza opcional:
-            ((DefaultTableModel) jTableTickets.getModel()).setRowCount(0);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Revierte si hay error , un ctrl z
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
             JOptionPane.showMessageDialog(this, "Error inserting tickets into the database.");
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "An unexpected error occurred.");
+
+        } finally {
+            //se cierra todo y se restablece el autocommit
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.setAutoCommit(true);
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }//GEN-LAST:event_btnCreateTicketsActionPerformed
 

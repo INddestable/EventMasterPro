@@ -56,7 +56,7 @@ public class ListTickets extends javax.swing.JPanel {
 
         jTableTickets.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {"Select an Event", null, null}
             },
             new String [] {
                 "Ticket name", "Number of tickets", "Ticket Prices"

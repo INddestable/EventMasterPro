@@ -4,6 +4,15 @@
  */
 package UI.asistant;
 
+import Connection.DBConnection;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author kevin
@@ -15,6 +24,7 @@ public class History extends javax.swing.JPanel {
      */
     public History() {
         initComponents();
+        loadHistoryData();
     }
 
     /**
@@ -29,23 +39,23 @@ public class History extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableHistory = new javax.swing.JTable();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setText("MY HISTORY");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableHistory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Event", "Date", "Ticket ID", "Type", "Price"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTableHistory);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -89,11 +99,47 @@ public class History extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void loadHistoryData() {
+        DefaultTableModel model = (DefaultTableModel) jTableHistory.getModel();
+        model.setRowCount(0); // limpiar tabla
 
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = """
+                SELECT 
+                    e.nameevent,
+                    e.date,
+                    t.idticket,
+                    t.ticket_type,
+                    t.price
+                FROM ticket t
+                JOIN event e ON t.idevent = e.idevent
+                WHERE t.idassistant = 1 AND t.selled = 1
+            """;
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String nameEvent = rs.getString("nameevent");
+                Date date = rs.getDate("date");
+                int idTicket = rs.getInt("idticket");
+                String type = rs.getString("ticket_type");
+                double price = rs.getDouble("price");
+
+                model.addRow(new Object[]{nameEvent, date, idTicket, type, price});
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading history.");
+        }
+    }
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableHistory;
     // End of variables declaration//GEN-END:variables
 }

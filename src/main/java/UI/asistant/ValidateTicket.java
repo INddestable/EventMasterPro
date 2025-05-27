@@ -4,6 +4,15 @@
  */
 package UI.asistant;
 
+import Connection.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author kevin
@@ -15,6 +24,7 @@ public class ValidateTicket extends javax.swing.JPanel {
      */
     public ValidateTicket() {
         initComponents();
+        loadTicketsList();
     }
 
     /**
@@ -28,21 +38,91 @@ public class ValidateTicket extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListTickets = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
+        btnValidator = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableTicketInformation = new javax.swing.JTable();
+        jLabel4 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setText("TICKET VALIDATOR");
 
+        jListTickets.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jListTickets.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jListTickets.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListTicketsValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jListTickets);
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setText("Select a ticket:");
+
+        btnValidator.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnValidator.setText("VALIDATE TICKET");
+        btnValidator.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnValidatorActionPerformed(evt);
+            }
+        });
+
+        jTableTicketInformation.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Select a ticket", null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTableTicketInformation);
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel4.setText("Ticket information:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(256, 256, 256)
+                        .addComponent(btnValidator, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 779, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 597, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnValidator, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                .addGap(40, 40, 40))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -70,9 +150,96 @@ public class ValidateTicket extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jListTicketsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListTicketsValueChanged
+        if (!evt.getValueIsAdjusting()) {
+            String selected = jListTickets.getSelectedValue();
+            showTicketInfo(selected);
+        }
+    }//GEN-LAST:event_jListTicketsValueChanged
+
+    private void btnValidatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidatorActionPerformed
+        String selected = jListTickets.getSelectedValue();
+
+        if (selected == null || selected.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No ticket selected.");
+            return;
+        }
+
+        JOptionPane.showMessageDialog(null, "Ticket validated successfully!");
+    }//GEN-LAST:event_btnValidatorActionPerformed
+
+    private void loadTicketsList() {
+        DefaultListModel<String> model = new DefaultListModel<>();
+
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = """
+                SELECT t.idticket, t.ticket_type
+                FROM ticket t
+                WHERE selled = 1
+            """;
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    int id = rs.getInt("idticket");
+                    String type = rs.getString("ticket_type");
+                    model.addElement(id + " - " + type);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        jListTickets.setModel(model);
+    }
+
+    private void showTicketInfo(String selectedItem) {
+        if (selectedItem == null || selectedItem.isEmpty()) return;
+
+        int idticket = Integer.parseInt(selectedItem.split(" - ")[0].trim());
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new String[]{"ID", "Event", "Type", "Price", "Date"});
+
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = """
+                SELECT t.idticket, e.nameevent, t.ticket_type, t.price, e.date
+                FROM ticket t
+                JOIN event e ON t.idevent = e.idevent
+                WHERE t.idticket = ?
+            """;
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, idticket);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    model.addRow(new Object[]{
+                        rs.getInt("idticket"),
+                        rs.getString("nameevent"),
+                        rs.getString("ticket_type"),
+                        rs.getDouble("price"),
+                        rs.getDate("date")
+                    });
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        jTableTicketInformation.setModel(model);
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnValidator;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JList<String> jListTickets;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTableTicketInformation;
     // End of variables declaration//GEN-END:variables
 }

@@ -102,7 +102,7 @@ public class ViewEvents extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
 
-        private void loadEventsIntoTable() {
+    private void loadEventsIntoTable() {
         DefaultTableModel model = (DefaultTableModel) jTableEvents.getModel();
         model.setRowCount(0); // Limpiar la tabla
 

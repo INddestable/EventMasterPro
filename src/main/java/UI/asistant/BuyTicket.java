@@ -214,18 +214,18 @@ public class BuyTicket extends javax.swing.JPanel {
     int idevent = Integer.parseInt(selectedEvent.split(" - ")[0].trim());
 
     try (Connection conn = DBConnection.getConnection()) {
-        String sql = """
-            UPDATE ticket
-            SET selled = 1
-            WHERE idticket = (
-                SELECT idticket FROM (
-                    SELECT idticket
-                    FROM ticket
-                    WHERE idevent = ? AND ticket_type = ? AND selled = 0
-                    LIMIT 1
-                ) AS temp
-            )
-        """;
+    String sql = """
+        UPDATE ticket
+        SET selled = 1, idassistant = 1
+        WHERE idticket = (
+            SELECT idticket FROM (
+                SELECT idticket
+                FROM ticket
+                WHERE idevent = ? AND ticket_type = ? AND selled = 0
+                LIMIT 1
+            ) AS temp
+        )
+    """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idevent);
